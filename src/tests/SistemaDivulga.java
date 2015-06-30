@@ -17,7 +17,7 @@ public class SistemaDivulga {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ClimaTempo().setVisible(true);
+                new Tela().setVisible(true);
             }
         });
     }

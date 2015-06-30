@@ -15,7 +15,16 @@ public class FeedMessage {
   String link;
   String author;
   String guid;
+  String src; 
 
+  public void setSrc(String src) {
+    this.src = src;
+  }
+  
+  public String getSrc(){
+      return src;
+  }
+  
   public String getTitle() {
     return title;
   }
@@ -39,11 +48,12 @@ public class FeedMessage {
   public void setLink(String link) {
     this.link = link;
   }
-
+ 
+  
   public String getAuthor() {
     return author;
   }
-
+  
   public void setAuthor(String author) {
     this.author = author;
   }
@@ -55,11 +65,11 @@ public class FeedMessage {
   public void setGuid(String guid) {
     this.guid = guid;
   }
-
+  
   @Override
   public String toString() {
     return "FeedMessage [title=" + title + ", description=" + description
-        + ", link=" + link + ", author=" + author + ", guid=" + guid
+        + ", link=" + link + ", author=" + author + ", guid=" + guid + "src=" + src
         + "]";
   }
 

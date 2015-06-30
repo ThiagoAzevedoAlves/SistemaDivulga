@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.swing.JOptionPane;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -30,6 +31,7 @@ public class RSSFeedParser {
   static final String ITEM = "item";
   static final String PUB_DATE = "pubDate";
   static final String GUID = "guid";
+  static final String SRC = "enclosure";
 
   final URL url;
 
@@ -54,6 +56,7 @@ public class RSSFeedParser {
       String author = "";
       String pubdate = "";
       String guid = "";
+      String src = "";
 
       // First create a new XMLInputFactory
       XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -64,14 +67,13 @@ public class RSSFeedParser {
       while (eventReader.hasNext()) {
         XMLEvent event = eventReader.nextEvent();
         if (event.isStartElement()) {
-          String localPart = event.asStartElement().getName()
-              .getLocalPart();
+         
+          String localPart = event.asStartElement().getName().getLocalPart();
           switch (localPart) {
           case ITEM:
             if (isFeedHeader) {
               isFeedHeader = false;
-              feed = new Feed(title, link, description, language,
-                  copyright, pubdate);
+              feed = new Feed(title, link, description, language, copyright, pubdate, src);
             }
             event = eventReader.nextEvent();
             break;
@@ -99,8 +101,13 @@ public class RSSFeedParser {
           case COPYRIGHT:
             copyright = getCharacterData(event, eventReader);
             break;
+          case SRC:
+            src = getCharacterData(event, eventReader);
+            break;
           }
-        } else if (event.isEndElement()) {
+        } 
+        else if (event.isEndElement()) {
+            
           if (event.asEndElement().getName().getLocalPart() == (ITEM)) {
             FeedMessage message = new FeedMessage();
             message.setAuthor(author);
@@ -108,6 +115,7 @@ public class RSSFeedParser {
             message.setGuid(guid);
             message.setLink(link);
             message.setTitle(title);
+            message.setSrc(src);
             feed.getMessages().add(message);
             event = eventReader.nextEvent();
             continue;
