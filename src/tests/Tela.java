@@ -10,6 +10,7 @@ import com.gtranslate.Audio;
 import com.gtranslate.Language;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,8 +25,11 @@ import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import java.io.ByteArrayInputStream;  
 import java.io.InputStream;  
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;  
 import java.util.List;
+import javax.imageio.ImageIO;
 import javax.print.Doc;  
 import javax.print.DocFlavor;  
 import javax.print.DocPrintJob;  
@@ -51,6 +55,7 @@ public class Tela extends javax.swing.JFrame {
     static int count = 0;
     static String [] titulo = new String[100];
     static String [] desc = new String[100];
+    static JLabel [] imagem = new JLabel[100];
     
     /**
      * Creates new form SistemaDivulga
@@ -63,28 +68,9 @@ public class Tela extends javax.swing.JFrame {
         initComponents();
         this.setSize(1380, 768);
         
-        
         String [] previsao = this.parsePrevisao();
-        NewParser p = new NewParser("http://feeds.feedburner.com/EXAME-Noticias?format=xml");
-        p.parse(); 
-RssFeed feed = p.getFeed();
-
-// Listing all categories & the no. of elements in each category 
-if (feed.category != null) 
-{ 
- System.out.println("Category: "); 
- for (String category : feed.category.keySet()) 
- { 
-  System.out.println(category 
-    + ": " 
-    + ((ArrayList<Item>)feed.category.get(category)).size()); 
- } 
-}
-
-// Listing all items in the feed 
-for (int i = 0; i < feed.items.size(); i++) 
- System.out.println(feed.items.get(i).pubDate); 
-            
+        
+        this.parseExame();
         jLabel1.setText(previsao[0]);
         jLabel2.setText(previsao[1]);
         jLabel3.setText(previsao[2]);
@@ -95,10 +81,6 @@ for (int i = 0; i < feed.items.size(); i++)
         //this.detectaImpressoras("Generic / Text Only");  
         //this.retornaImressoras();  
         //this.imprime("TESTE ");  
-        
-        
-        
-        
         //esconde os titulos e noticias 2 ------------------------------------//
         this.jLTitulo1.setVisible(false);
         this.jLNoticia1.setVisible(false);
@@ -173,6 +155,7 @@ for (int i = 0; i < feed.items.size(); i++)
         jLFonte = new javax.swing.JLabel();
         jLTitulo1 = new javax.swing.JLabel();
         jLNoticia1 = new javax.swing.JLabel();
+        jLImagem = new javax.swing.JLabel();
         jLReg = new javax.swing.JLabel();
         jLCer = new javax.swing.JLabel();
         jLCerP = new javax.swing.JLabel();
@@ -239,6 +222,10 @@ for (int i = 0; i < feed.items.size(); i++)
         jLNoticia1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLNoticia1.setText("<noticia>");
 
+        jLImagem.setFont(new java.awt.Font("Square721 BT", 2, 18)); // NOI18N
+        jLImagem.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLImagem.setText("<imagem>");
+
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
         jInternalFrame1Layout.setHorizontalGroup(
@@ -246,20 +233,25 @@ for (int i = 0; i < feed.items.size(); i++)
             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jInternalFrame1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLFonte, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jLTitulo1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
                     .addComponent(jLNoticia1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLNoticia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLNoticia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jInternalFrame1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLFonte, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                            .addComponent(jLData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
             .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jInternalFrame1Layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jLTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
                     .addContainerGap()))
+            .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(275, Short.MAX_VALUE)))
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,6 +272,11 @@ for (int i = 0; i < feed.items.size(); i++)
                     .addGap(10, 10, 10)
                     .addComponent(jLTitulo)
                     .addContainerGap(423, Short.MAX_VALUE)))
+            .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jInternalFrame1Layout.createSequentialGroup()
+                    .addContainerGap(190, Short.MAX_VALUE)
+                    .addComponent(jLImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
 
         getContentPane().add(jInternalFrame1);
@@ -394,23 +391,49 @@ for (int i = 0; i < feed.items.size(); i++)
         timer.start();
         
     }
-    
-    
-    
-    
+        
     public void parseExame(){
       if(totalCount < 100){
-        RSSFeedParser parser = new RSSFeedParser("http://feeds.feedburner.com/EXAME-Noticias?format=xml");
-        Feed feed = parser.readFeed();
+          
+        NewParser p = new NewParser("http://feeds.feedburner.com/EXAME-Noticias?format=xml");
+        p.parse(); 
+        RssFeed feed = p.getFeed();
+        
         String noticia = "";
         int n = 0;
         JLabel not = new JLabel();
-        this.jLFonte.setText("exame.com");
-        this.jLData.setText("Atualizado em 29/06/2015");
-        for (FeedMessage message : feed.getMessages()) {
-            titulo[contador]= new String(message.getTitle());
-            desc[contador]= new String(message.getDescription());
-            contador++;
+        this.jLFonte.setText("exame.abril.com.br");
+        this.jLData.setText(feed.items.get(0).pubDate);
+        for (Item lista : feed.items) {
+            Image image = null;
+            String [] aux = lista.description.split("src='", 2);
+            String [] aux2 = aux[1].split("'></p>", 2);
+            String [] daux = aux[0].split("<p>", 2);
+            String [] daux2 = daux[1].split("</p>", 2);
+                
+            try {
+                                
+                titulo[contador]= new String(lista.title);
+                desc[contador] = new String(daux2[0]);
+                URL url = new URL(aux2[0]);
+                image = ImageIO.read(url);
+                //redimensiona imagem-----------------------------------------------------------------------//
+                BufferedImage resizedImg = new BufferedImage(500, 270, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D g = resizedImg.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g.drawImage(new ImageIcon(image).getImage(), 0, 0, 500, 270, null);
+                g.dispose();
+        
+                imagem[contador] = new JLabel(new ImageIcon(resizedImg));
+                //-----------------------------------------------------------------------------------------//
+                
+                
+                contador++;
+            } catch (MalformedURLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
         }
         
         //método que atualiza as noticias ------------------------------------------------//
@@ -451,9 +474,7 @@ for (int i = 0; i < feed.items.size(); i++)
                     aux[0] = desc[totalCount];
                     aux[1] = null;
                 }
-//                if(aux[0].length()>=1){
-//                    if(aux[0].charAt(0)=='<') aux[0] = "";
-//                }
+                
                 jLNoticia.setText(aux[0]);
                 if (aux[1] != null){
                     jLNoticia1.setVisible(true);
@@ -461,8 +482,13 @@ for (int i = 0; i < feed.items.size(); i++)
                 }else{
                     jLNoticia1.setVisible(false);
                 }
+                jLImagem.setText(null);
+                jLImagem.setIcon(imagem[totalCount].getIcon());
+                
                 
                 totalCount++;
+                
+                
             }
         };
         //-----------------------------------------------------------------------------------------------//
@@ -472,10 +498,6 @@ for (int i = 0; i < feed.items.size(); i++)
         totalCount = 0;        
       }  
     }
-    
-    
-    
-    
     
     public void rodaVideo(String nome){
         boolean found = new NativeDiscovery().discover();
@@ -563,6 +585,7 @@ for (int i = 0; i < feed.items.size(); i++)
     private javax.swing.JLabel jLFonte;
     private javax.swing.JLabel jLFundo;
     private javax.swing.JLabel jLFundoPrev;
+    private javax.swing.JLabel jLImagem;
     private javax.swing.JLabel jLNoticia;
     private javax.swing.JLabel jLNoticia1;
     private javax.swing.JLabel jLReg;
