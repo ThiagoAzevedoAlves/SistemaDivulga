@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tests;
+package sistemadivulga.frames;
 
 import bemajava.*;
 import com.gtranslate.Audio;
@@ -163,7 +163,6 @@ public class Tela extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(1360, 768));
         setResizable(false);
         getContentPane().setLayout(null);
 

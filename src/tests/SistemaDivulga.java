@@ -5,6 +5,11 @@
  */
 package tests;
 
+import javax.xml.ws.Endpoint;
+import sistemadivulga.frames.Tela;
+import sistemadivulga.webservice.Client;
+import sistemadivulga.webservice.Painel;
+
 /**
  *
  * @author Thiago
@@ -17,7 +22,9 @@ public class SistemaDivulga {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Tela().setVisible(true);
+                Endpoint.publish("http://0.0.0.0:9876/webservice", new Painel());
+                new Client();
+                //new Tela().setVisible(true);
             }
         });
     }
