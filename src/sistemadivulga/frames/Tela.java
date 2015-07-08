@@ -43,6 +43,8 @@ import javax.swing.Timer;
 import sistemadivulga.read.NewParser;
 import sistemadivulga.read.NewParser.Item;
 import sistemadivulga.read.NewParser.RssFeed;
+import uk.co.caprica.vlcj.player.MediaPlayer;
+import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 
 /**
  *
@@ -50,12 +52,13 @@ import sistemadivulga.read.NewParser.RssFeed;
  */
 public class Tela extends javax.swing.JFrame {
     static int contador =0;
-    static int delay = 2000; //milliseconds
     static int totalCount = 0;
     static int count = 0;
     static String [] titulo = new String[100];
     static String [] desc = new String[100];
     static JLabel [] imagem = new JLabel[100];
+    static Timer timer = new Timer(2000, null);
+    static int TipoNoticia = 0;
     
     /**
      * Creates new form SistemaDivulga
@@ -66,21 +69,18 @@ public class Tela extends javax.swing.JFrame {
     @SuppressWarnings("WaitWhileNotSynced")
     public Tela() {
         initComponents();
-        this.setSize(1380, 768);
-        
+        this.setSize(1380, 768);        
+        //previsao----------------------------------------------//
         String [] previsao = this.parsePrevisao();
-        
-        this.parseExame();
+                
         jLabel1.setText(previsao[0]);
         jLabel2.setText(previsao[1]);
         jLabel3.setText(previsao[2]);
+        //-----------------------------------------------------//
         
-        //this.rodaVideo("Dengue_Sintomas.swf");
-        //this.chamaCert("Senha 1");
-        
-        //this.detectaImpressoras("Generic / Text Only");  
-        //this.retornaImressoras();  
-        //this.imprime("TESTE ");  
+        this.detectaImpressoras("Generic / Text Only");
+        this.imprime("  \n\n\n    TESTE        \n\n\n\n");
+        this.acionarGuilhotina();
         //esconde os titulos e noticias 2 ------------------------------------//
         this.jLTitulo1.setVisible(false);
         this.jLNoticia1.setVisible(false);
@@ -108,10 +108,10 @@ public class Tela extends javax.swing.JFrame {
         //-----------------------------------------------------------------------------------------//
         
         //certidao preferencial------------------------------------------------------------------------------------//
-        resizedImg = new BufferedImage(400, 150, BufferedImage.TYPE_INT_ARGB);
+        resizedImg = new BufferedImage(400, 180, BufferedImage.TYPE_INT_ARGB);
         g = resizedImg.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.drawImage(new ImageIcon(getClass().getResource("/recursos/CERTIDOESPREF.png")).getImage(), 0, 0, 400, 150, null);
+        g.drawImage(new ImageIcon(getClass().getResource("/recursos/CERTIDOESPREF.png")).getImage(), 0, 0, 400, 180, null);
         g.dispose();
         
         jLCerP.setIcon(new javax.swing.ImageIcon(resizedImg));
@@ -137,6 +137,9 @@ public class Tela extends javax.swing.JFrame {
         jLReg.setIcon(new javax.swing.ImageIcon(resizedImg));
         //-----------------------------------------------------------------------------------------//
         
+        //prepara Parser Exame---------------------------------------------------------------//
+        parseExame();
+        BeginTimer();
     }
 
     @SuppressWarnings("unchecked")
@@ -156,6 +159,9 @@ public class Tela extends javax.swing.JFrame {
         jLTitulo1 = new javax.swing.JLabel();
         jLNoticia1 = new javax.swing.JLabel();
         jLImagem = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLNCer = new javax.swing.JLabel();
+        jLNCerP = new javax.swing.JLabel();
         jLReg = new javax.swing.JLabel();
         jLCer = new javax.swing.JLabel();
         jLCerP = new javax.swing.JLabel();
@@ -280,18 +286,45 @@ public class Tela extends javax.swing.JFrame {
 
         getContentPane().add(jInternalFrame1);
         jInternalFrame1.setBounds(10, 260, 800, 500);
+
+        jLabel4.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 115, 178));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("0");
+        getContentPane().add(jLabel4);
+        jLabel4.setBounds(1050, 650, 60, 70);
+
+        jLNCer.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
+        jLNCer.setForeground(new java.awt.Color(255, 255, 255));
+        jLNCer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLNCer.setText("0");
+        getContentPane().add(jLNCer);
+        jLNCer.setBounds(1050, 300, 60, 70);
+
+        jLNCerP.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
+        jLNCerP.setForeground(new java.awt.Color(153, 130, 204));
+        jLNCerP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLNCerP.setText("0");
+        getContentPane().add(jLNCerP);
+        jLNCerP.setBounds(1050, 500, 60, 70);
         getContentPane().add(jLReg);
         jLReg.setBounds(880, 590, 400, 150);
         getContentPane().add(jLCer);
-        jLCer.setBounds(880, 270, 400, 150);
+        jLCer.setBounds(880, 240, 400, 150);
         getContentPane().add(jLCerP);
-        jLCerP.setBounds(880, 430, 400, 150);
+        jLCerP.setBounds(880, 400, 400, 180);
         getContentPane().add(jLFundo);
         jLFundo.setBounds(0, 0, 1390, 768);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    public void BeginTimer() {
+//        timer.addActionListener(Exame);
+//        timer.start();
+        rodaVideo("Dengue_Sintomas.swf");
+    }
+    
     public String[] parsePrevisao(){
         String [] ret = new String [3];
         RSSFeedParser parser = new RSSFeedParser("http://servicos.cptec.inpe.br/RSS/cidade/3914/previsao.xml");
@@ -318,82 +351,139 @@ public class Tela extends javax.swing.JFrame {
         return ret;
     }
     
-    public void parseG1(){
-        
-        RSSFeedParser parser = new RSSFeedParser("http://g1.globo.com/dynamo/brasil/rss2.xml");
-        Feed feed = parser.readFeed();
-        String noticia = "";
-        int n = 0;
-        JLabel not = new JLabel();
-        this.jLFonte.setText("g1.globo.com");
-        this.jLData.setText("Atualizado em 29/06/2015");
-        for (FeedMessage message : feed.getMessages()) {
-            titulo[contador]= new String(message.getTitle());
-            desc[contador]= new String(message.getDescription());
-            contador++;
-        }
-        
-        //método que atualiza as noticias ------------------------------------------------//
-        ActionListener taskPerformer = new ActionListener() {
+    public ActionListener Exame = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                    String [] aux = new String[2];
+                    char espaco = 0;
+                    int i = 0;
+                    i = titulo[totalCount].length()/2;
+                    if(i > 10){
+                        while(espaco != ' '){
+                            espaco = titulo[totalCount].charAt(i);
+                            i++;
+                        }
+                        aux[0] = titulo[totalCount].substring(0,i);
+                        aux[1] = titulo[totalCount].substring(i);
+                    }else{
+                        aux[0] = titulo[totalCount];
+                        aux[1] = null;
+                    }
+                    espaco = 'a';
+                
+                    jLTitulo.setText(aux[0]);
+                    if (aux[1] != null){
+                        jLTitulo1.setVisible(true);
+                        jLTitulo1.setText(aux[1]);
+                    }else{
+                        jLTitulo1.setVisible(false);
+                    }
+                    i = desc[totalCount].length()/2;
+                    if(i > 15){
+                        while(espaco != ' '){
+                            espaco = desc[totalCount].charAt(i);
+                            i++;
+                        }
+                        aux[0] = desc[totalCount].substring(0,i);
+                        aux[1] = desc[totalCount].substring(i);
+                    }else{
+                        aux[0] = desc[totalCount];
+                        aux[1] = null;
+                    }
+                
+                    jLNoticia.setText(aux[0]);
+                    if (aux[1] != null){
+                        jLNoticia1.setVisible(true);
+                        jLNoticia1.setText(aux[1]);
+                    }else{
+                        jLNoticia1.setVisible(false);
+                    }
+                    jLImagem.setText(null);
+                    jLImagem.setIcon(imagem[totalCount].getIcon());
+                    totalCount++;
+                    if(totalCount == 10){
+                        totalCount = 0;
+                        parseG1();
+                        timer.removeActionListener(Exame);
+                        timer.addActionListener(G1);
+                    }
+                }                
+        };
+    
+    public ActionListener G1 = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 String [] aux = new String[2];
                 char espaco = 0;
-                int i = titulo[totalCount].length()/2;
+                int i = 0;
+                i = titulo[totalCount].length()/2;
                 if(i > 10){
-                    while(espaco != ' '){
-                        espaco = titulo[totalCount].charAt(i);
-                        i++;
-                    }
-                    aux[0] = titulo[totalCount].substring(0,i);
-                    aux[1] = titulo[totalCount].substring(i);
+                        while(espaco != ' '){
+                            espaco = titulo[totalCount].charAt(i);
+                            i++;
+                        }
+                        aux[0] = titulo[totalCount].substring(0,i);
+                        aux[1] = titulo[totalCount].substring(i);
                 }else{
-                    aux[0] = titulo[totalCount];
-                    aux[1] = null;
+                        aux[0] = titulo[totalCount];
+                        aux[1] = null;
                 }
                 espaco = 'a';
-                
+
                 jLTitulo.setText(aux[0]);
                 if (aux[1] != null){
-                    jLTitulo1.setVisible(true);
-                    jLTitulo1.setText(aux[1]);
+                        jLTitulo1.setVisible(true);
+                        jLTitulo1.setText(aux[1]);
                 }else{
-                    jLTitulo1.setVisible(false);
+                        jLTitulo1.setVisible(false);
                 }
                 i = desc[totalCount].length()/2;
                 if(i > 15){
-                    while(espaco != ' '){
-                        espaco = desc[totalCount].charAt(i);
-                        i++;
-                    }
-                    aux[0] = desc[totalCount].substring(0,i);
-                    aux[1] = desc[totalCount].substring(i);
+                        while(espaco != ' '){
+                            espaco = desc[totalCount].charAt(i);
+                            i++;
+                        }
+                        aux[0] = desc[totalCount].substring(0,i);
+                        aux[1] = desc[totalCount].substring(i);
                 }else{
-                    aux[0] = desc[totalCount];
-                    aux[1] = null;
+                        aux[0] = desc[totalCount];
+                        aux[1] = null;
                 }
                 if(aux[0].length()>=1){
-                    if(aux[0].charAt(0)=='<') aux[0] = "";
+                if(aux[0].charAt(0)=='<') aux[0] = "";
                 }
                 jLNoticia.setText(aux[0]);
                 if (aux[1] != null){
-                    jLNoticia1.setVisible(true);
-                    jLNoticia1.setText(aux[1]);
+                        jLNoticia1.setVisible(true);
+                        jLNoticia1.setText(aux[1]);
                 }else{
-                    jLNoticia1.setVisible(false);
+                        jLNoticia1.setVisible(false);
                 }
-                
                 totalCount++;
+                if(totalCount == 10){
+                    timer.stop();
+                    rodaVideo("Dengue_Sintomas.swf");
+                    totalCount = 0;
+                }
+                }
+            };
+            
+    
+    public void parseG1(){
+            RSSFeedParser parser = new RSSFeedParser("http://g1.globo.com/dynamo/brasil/rss2.xml");
+            Feed feed = parser.readFeed();
+            String noticia = "";
+            int n = 0;
+            JLabel not = new JLabel();
+            this.jLFonte.setText("g1.globo.com");
+            this.jLData.setText("Atualizado em 29/06/2015");
+            for (FeedMessage message : feed.getMessages()) {
+                titulo[contador]= new String(message.getTitle());
+                desc[contador]= new String(message.getDescription());
+                contador++;
             }
-        };
-        //-----------------------------------------------------------------------------------------------//
-        Timer timer = new Timer(delay, taskPerformer);
-        timer.start();
-        
+            contador = 0;
     }
         
     public void parseExame(){
-      if(totalCount < 100){
-          
         NewParser p = new NewParser("http://feeds.feedburner.com/EXAME-Noticias?format=xml");
         p.parse(); 
         RssFeed feed = p.getFeed();
@@ -409,103 +499,62 @@ public class Tela extends javax.swing.JFrame {
             String [] aux2 = aux[1].split("'></p>", 2);
             String [] daux = aux[0].split("<p>", 2);
             String [] daux2 = daux[1].split("</p>", 2);
-                
-            try {
-                                
-                titulo[contador]= new String(lista.title);
-                desc[contador] = new String(daux2[0]);
-                URL url = new URL(aux2[0]);
+            titulo[contador]= new String(lista.title);
+            desc[contador] = new String(daux2[0]);
+            try{
+                URL url = new URL(aux2[0]); 
                 image = ImageIO.read(url);
-                //redimensiona imagem-----------------------------------------------------------------------//
-                BufferedImage resizedImg = new BufferedImage(500, 270, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g = resizedImg.createGraphics();
-                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            }catch (IOException ex){
+                image = null;
+            }
+            //redimensiona imagem-----------------------------------------------------------------------//
+            BufferedImage resizedImg = new BufferedImage(500, 270, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = resizedImg.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            if (image != null){
                 g.drawImage(new ImageIcon(image).getImage(), 0, 0, 500, 270, null);
-                g.dispose();
-        
-                imagem[contador] = new JLabel(new ImageIcon(resizedImg));
-                //-----------------------------------------------------------------------------------------//
-                
-                
-                contador++;
-            } catch (MalformedURLException ex) {
-                JOptionPane.showMessageDialog(null, ex);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, ex);
             }
+            g.dispose();
+        
+            imagem[contador] = new JLabel(new ImageIcon(resizedImg));
+            //-----------------------------------------------------------------------------------------//
+            contador++;
         }
-        
-        //método que atualiza as noticias ------------------------------------------------//
-        ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                String [] aux = new String[2];
-                char espaco = 0;
-                int i = titulo[totalCount].length()/2;
-                if(i > 10){
-                    while(espaco != ' '){
-                        espaco = titulo[totalCount].charAt(i);
-                        i++;
-                    }
-                    aux[0] = titulo[totalCount].substring(0,i);
-                    aux[1] = titulo[totalCount].substring(i);
-                }else{
-                    aux[0] = titulo[totalCount];
-                    aux[1] = null;
-                }
-                espaco = 'a';
-                
-                jLTitulo.setText(aux[0]);
-                if (aux[1] != null){
-                    jLTitulo1.setVisible(true);
-                    jLTitulo1.setText(aux[1]);
-                }else{
-                    jLTitulo1.setVisible(false);
-                }
-                i = desc[totalCount].length()/2;
-                if(i > 15){
-                    while(espaco != ' '){
-                        espaco = desc[totalCount].charAt(i);
-                        i++;
-                    }
-                    aux[0] = desc[totalCount].substring(0,i);
-                    aux[1] = desc[totalCount].substring(i);
-                }else{
-                    aux[0] = desc[totalCount];
-                    aux[1] = null;
-                }
-                
-                jLNoticia.setText(aux[0]);
-                if (aux[1] != null){
-                    jLNoticia1.setVisible(true);
-                    jLNoticia1.setText(aux[1]);
-                }else{
-                    jLNoticia1.setVisible(false);
-                }
-                jLImagem.setText(null);
-                jLImagem.setIcon(imagem[totalCount].getIcon());
-                
-                
-                totalCount++;
-                
-                
-            }
-        };
-        //-----------------------------------------------------------------------------------------------//
-        Timer timer = new Timer(delay, taskPerformer);
-        timer.start();
-      }else{
-        totalCount = 0;        
-      }  
+        contador = 0;        
     }
     
     public void rodaVideo(String nome){
+        jLTitulo.setVisible(false);
+        jLTitulo1.setVisible(false);
+        jLNoticia.setVisible(false);
+        jLNoticia1.setVisible(false);
+        jLFonte.setVisible(false);
+        jLData.setVisible(false);
+        jLImagem.setVisible(false);
         boolean found = new NativeDiscovery().discover();
         EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-        mediaPlayerComponent.setBounds(0, 0, 800,600);
+        mediaPlayerComponent.setBounds(0, 0, 800,500);
         this.jInternalFrame1.getContentPane().add(mediaPlayerComponent);
-            
         mediaPlayerComponent.getMediaPlayer().playMedia(nome);
-        mediaPlayerComponent.getMediaPlayer().play();
+        
+        mediaPlayerComponent.getMediaPlayer().addMediaPlayerEventListener(new MediaPlayerEventAdapter(){
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                mediaPlayerComponent.setVisible(false);
+                parseExame();
+                timer.removeActionListener(G1);
+                timer.addActionListener(Exame);
+                timer.start();
+                jLTitulo.setVisible(true);
+                jLTitulo1.setVisible(true);
+                jLNoticia.setVisible(true);
+                jLNoticia1.setVisible(true);
+                jLFonte.setVisible(true);
+                jLData.setVisible(true);
+                jLImagem.setVisible(true);
+                
+            };
+        });
     }
     
     public void chamaCert(String numero){
@@ -544,8 +593,8 @@ public class Tela extends javax.swing.JFrame {
             PrintService[] ps = PrintServiceLookup.lookupPrintServices(df, null);    
             for (PrintService p : ps) {    
                 if(p.getName()!=null && p.getName().contains(impressoraSelecionada)){    
-                    impressora = p;    
-                }       
+                    impressora = p;
+                }
             }    
         } catch (Exception e) {    
             e.printStackTrace();    
@@ -553,7 +602,6 @@ public class Tela extends javax.swing.JFrame {
     }  
       
     public  boolean imprime(String texto) {    
-    
         if (impressora == null) {    
             JOptionPane.showMessageDialog(null, "Nennhuma impressora foi encontrada. Instale uma impressora padrão \r\n(Generic Text Only) e reinicie o programa.");   
         } else {    
@@ -585,6 +633,8 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JLabel jLFundo;
     private javax.swing.JLabel jLFundoPrev;
     private javax.swing.JLabel jLImagem;
+    public static javax.swing.JLabel jLNCer;
+    public static javax.swing.JLabel jLNCerP;
     private javax.swing.JLabel jLNoticia;
     private javax.swing.JLabel jLNoticia1;
     private javax.swing.JLabel jLReg;
@@ -593,6 +643,9 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    public static javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPPrev;
     // End of variables declaration//GEN-END:variables
+
+    
 }

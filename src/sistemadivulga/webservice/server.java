@@ -5,6 +5,7 @@
  */
 package sistemadivulga.webservice;
 
+import java.util.ArrayList;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.soap.SOAPBinding;
@@ -14,5 +15,13 @@ import javax.jws.soap.SOAPBinding.Style;
 @SOAPBinding(style = Style.RPC)
 public interface server {
     @WebMethod void CertidaoProximo();
+    @WebMethod void PreferencialProximo();
+    @WebMethod void RegistrosProximo();
+    @WebMethod void AutomaticoCert();
+    @WebMethod void RepeteRegistros();
+    @WebMethod void RepeteCertidoes();
+    @WebMethod void RepetePreferencial();
+    @WebMethod int FilaRegistros();
+    @WebMethod int [] FilaCertidoes();
 }
 
