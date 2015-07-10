@@ -28,7 +28,7 @@ public class Client {
                 this.qname = new QName("http://webservice.sistemadivulga/","PainelService");
                 this.ws = Service.create(url, qname);
                 s = ws.getPort(server.class);
-                s.RegistrosProximo();
+//                s.CertidaoProximo();
             } catch (MalformedURLException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -23,5 +23,8 @@ public interface server {
     @WebMethod void RepetePreferencial();
     @WebMethod int FilaRegistros();
     @WebMethod int [] FilaCertidoes();
+    @WebMethod void ImprimePreferencial();
+    @WebMethod void ImprimeCertidoes();
+    @WebMethod void ImprimeRegistros();
 }
 

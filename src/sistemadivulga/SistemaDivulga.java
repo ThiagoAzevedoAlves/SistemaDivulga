@@ -10,6 +10,7 @@ package sistemadivulga;
 import javax.xml.ws.Endpoint;
 import sistemadivulga.bematech.Principal;
 import sistemadivulga.frames.Tela;
+import sistemadivulga.frames.chamada;
 import sistemadivulga.webservice.Client;
 import sistemadivulga.webservice.Painel;
 
@@ -25,10 +26,10 @@ public class SistemaDivulga {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                //Endpoint.publish("http://0.0.0.0:9876/webservice", new Painel());
+                Endpoint.publish("http://0.0.0.0:9876/webservice", new Painel());
                 //new Client();
                 //new Principal();
-                new Tela().setVisible(true);
+                //new chamada().setVisible(true);
             }
         });
     }

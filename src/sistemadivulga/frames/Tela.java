@@ -25,8 +25,8 @@ import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import java.io.ByteArrayInputStream;  
 import java.io.InputStream;  
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;  
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -64,7 +64,7 @@ public class Tela extends javax.swing.JFrame {
      * Creates new form SistemaDivulga
      */
     
-    private static PrintService impressora;  
+    private static PrintService impressora;
     
     @SuppressWarnings("WaitWhileNotSynced")
     public Tela() {
@@ -78,9 +78,6 @@ public class Tela extends javax.swing.JFrame {
         jLabel3.setText(previsao[2]);
         //-----------------------------------------------------//
         
-        this.detectaImpressoras("Generic / Text Only");
-        this.imprime("  \n\n\n    TESTE        \n\n\n\n");
-        this.acionarGuilhotina();
         //esconde os titulos e noticias 2 ------------------------------------//
         this.jLTitulo1.setVisible(false);
         this.jLNoticia1.setVisible(false);
@@ -159,7 +156,7 @@ public class Tela extends javax.swing.JFrame {
         jLTitulo1 = new javax.swing.JLabel();
         jLNoticia1 = new javax.swing.JLabel();
         jLImagem = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        jLNReg = new javax.swing.JLabel();
         jLNCer = new javax.swing.JLabel();
         jLNCerP = new javax.swing.JLabel();
         jLReg = new javax.swing.JLabel();
@@ -287,26 +284,26 @@ public class Tela extends javax.swing.JFrame {
         getContentPane().add(jInternalFrame1);
         jInternalFrame1.setBounds(10, 260, 800, 500);
 
-        jLabel4.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 115, 178));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("0");
-        getContentPane().add(jLabel4);
-        jLabel4.setBounds(1050, 650, 60, 70);
+        jLNReg.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
+        jLNReg.setForeground(new java.awt.Color(103, 143, 200));
+        jLNReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLNReg.setText("90");
+        getContentPane().add(jLNReg);
+        jLNReg.setBounds(990, 650, 180, 70);
 
         jLNCer.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNCer.setForeground(new java.awt.Color(255, 255, 255));
         jLNCer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNCer.setText("0");
+        jLNCer.setText("90");
         getContentPane().add(jLNCer);
-        jLNCer.setBounds(1050, 300, 60, 70);
+        jLNCer.setBounds(994, 300, 180, 70);
 
         jLNCerP.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNCerP.setForeground(new java.awt.Color(153, 130, 204));
         jLNCerP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNCerP.setText("0");
+        jLNCerP.setText("90");
         getContentPane().add(jLNCerP);
-        jLNCerP.setBounds(1050, 500, 60, 70);
+        jLNCerP.setBounds(990, 500, 180, 70);
         getContentPane().add(jLReg);
         jLReg.setBounds(880, 590, 400, 150);
         getContentPane().add(jLCer);
@@ -609,7 +606,7 @@ public class Tela extends javax.swing.JFrame {
                 DocPrintJob dpj = impressora.createPrintJob();    
                 InputStream stream = new ByteArrayInputStream((texto).getBytes());    
                 DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;    
-                Doc doc = new SimpleDoc(stream, flavor, null);    
+                Doc doc = new SimpleDoc(stream, flavor, null);
                 dpj.print(doc, null);    
                 return true;    
             } catch (PrintException e) {    
@@ -621,8 +618,58 @@ public class Tela extends javax.swing.JFrame {
   
     public void acionarGuilhotina(){  
         imprime(""+(char)27+(char)109);  
-    }  
+    }
     
+    public void centraliza(){
+        imprime(""+(char)27+(char)97+(char)1);
+        
+    }
+    
+    public void imprimeCert(String senha){
+        imprime(""+(char)27+(char)33+(char)56);
+        imprime(""+(char)27+(char)100+(char)1);
+        imprime("CERTIDOES\n\n");
+        imprime(""+(char)27+(char)100+(char)0);
+        imprime(""+(char)27+(char)33+(char)1); 
+        imprime("SENHA:\n\n");
+        imprime(""+(char)27+(char)33+(char)56);
+        imprime(""+(char)27+(char)100+(char)1);
+        imprimeNegrito(senha+"\n\n\n\n");
+        imprime(""+(char)27+(char)100+(char)0);
+        imprime(""+(char)27+(char)33+(char)1);
+    }
+    
+    public void imprimeCertPref(String senha){
+        imprime(""+(char)27+(char)33+(char)56);
+        imprime(""+(char)27+(char)100+(char)1);
+        imprime("CERTIDOES PREFERENCIAL\n\n");
+        imprime(""+(char)27+(char)100+(char)0);
+        imprime(""+(char)27+(char)33+(char)1); 
+        imprime("SENHA:\n\n");
+        imprime(""+(char)27+(char)33+(char)56);
+        imprime(""+(char)27+(char)100+(char)1);
+        imprimeNegrito(senha+"\n\n\n\n");
+        imprime(""+(char)27+(char)100+(char)0);
+        imprime(""+(char)27+(char)33+(char)1);
+    }
+    
+    public void imprimeReg(String senha){
+        imprime(""+(char)27+(char)33+(char)56);
+        imprime(""+(char)27+(char)100+(char)1);
+        imprime("REGISTROS\n\n");
+        imprime(""+(char)27+(char)100+(char)0);
+        imprime(""+(char)27+(char)33+(char)1); 
+        imprime("SENHA:\n\n");
+        imprime(""+(char)27+(char)33+(char)56);
+        imprime(""+(char)27+(char)100+(char)1);
+        imprimeNegrito(senha+"\n\n\n\n");
+        imprime(""+(char)27+(char)100+(char)0);
+        imprime(""+(char)27+(char)33+(char)1);
+    }
+    
+    public void imprimeNegrito(String texto){
+        imprime(""+(char)27+(char)69 + texto +(char)27+(char)70);
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JInternalFrame jInternalFrame1;
@@ -635,6 +682,7 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JLabel jLImagem;
     public static javax.swing.JLabel jLNCer;
     public static javax.swing.JLabel jLNCerP;
+    public static javax.swing.JLabel jLNReg;
     private javax.swing.JLabel jLNoticia;
     private javax.swing.JLabel jLNoticia1;
     private javax.swing.JLabel jLReg;
@@ -643,7 +691,6 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    public static javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPPrev;
     // End of variables declaration//GEN-END:variables
 
