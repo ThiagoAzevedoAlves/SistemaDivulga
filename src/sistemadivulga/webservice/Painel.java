@@ -36,6 +36,8 @@ import javax.swing.Timer;
 import javazoom.jl.decoder.JavaLayerException;
 import sistemadivulga.frames.Tela;
 import sistemadivulga.frames.chamada;
+import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.discovery.NativeDiscovery;
  
 /**
  *
@@ -58,7 +60,7 @@ public class Painel implements server {
         tempo = 0;
         c = new chamada();
         c.setVisible(true);
-        cert_a = cert_a+1;
+        
         c.JlSenha.setText(Integer.toString(cert_a));
         c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
@@ -200,11 +202,11 @@ public class Painel implements server {
     
     public Painel(){
         this.cert = 100;
-        this.cert_a = 90;
+        this.cert_a = 100;
         this.cert_pref = 100;
-        this.cert_pref_a = 90;
+        this.cert_pref_a = 100;
         this.reg = 100;
-        this.reg_a = 99;
+        this.reg_a = 100;
         this.tela = new Tela();
         tela.setVisible(true);
     }
@@ -213,35 +215,33 @@ public class Painel implements server {
     @Override
     public void AutomaticoCert() {
         if((this.cert_pref>this.cert_pref_a)){
+            cert_pref_a++;
             this.chamaCertPref(String.valueOf(this.cert_pref_a+1));
-        }else if(this.cert>this.cert_a){
+        }else if((this.cert_pref<this.cert_pref_a) && (this.cert>this.cert_a)){
             this.chamaCert(String.valueOf(this.cert_a+1));
-        }else{
-            this.RepeteCertidoes();
         }
     }
     
     @Override
     public void CertidaoProximo() {
         if((this.cert>this.cert_a)){
+            cert_a++;
             this.chamaCert(String.valueOf(this.cert_a+1));
-        }else{
-            this.RepeteCertidoes();
         }
     }
     
     @Override
     public void PreferencialProximo() {
         if((this.cert_pref>this.cert_pref_a)){
+            cert_pref_a++;
             this.chamaCertPref(String.valueOf(this.cert_pref_a+1));
-        }else{
-            this.RepetePreferencial();
         }
     }
     
     @Override
     public void RegistrosProximo() {
         if(this.reg>this.reg_a){
+            reg_a++;
             this.chamaReg(String.valueOf(this.reg_a+1));
         }
     }
@@ -279,6 +279,7 @@ public class Painel implements server {
         try {
             InputStream certidao = null;
             InputStream senha = null;
+            this.rodaAudio("dong.mp3");
             Audio audio = Audio.getInstance();
             certidao = audio.getAudio("Certidões", Language.PORTUGUESE);
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
@@ -296,6 +297,7 @@ public class Painel implements server {
             InputStream registros = null;
             InputStream senha = null;
             Audio audio = Audio.getInstance();
+            this.rodaAudio("dong.mp3");
             registros = audio.getAudio("Registros, ", Language.PORTUGUESE);
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(registros);
@@ -306,11 +308,12 @@ public class Painel implements server {
     }
 
     private void chamaCertPref(String numero) {
-        TimerCertidao();
+        TimerPreferencial();
         try {
             InputStream certidao = null;
             InputStream senha = null;
             Audio audio = Audio.getInstance();
+            this.rodaAudio("dong.mp3");
             certidao = audio.getAudio("Certidões Preferencial, ", Language.PORTUGUESE);
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(certidao);
@@ -424,4 +427,17 @@ public class Painel implements server {
         imprime(""+(char)27+(char)69 + texto +(char)27+(char)70);
     }
     
+    
+    public void rodaAudio(String audio){
+        
+        boolean found = new NativeDiscovery().discover();
+        EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
+        mediaPlayerComponent.setBounds(0, 0, 800,500);
+        tela.jInternalFrame1.setVisible(false);
+        mediaPlayerComponent.setVisible(false);
+        tela.jInternalFrame1.getContentPane().add(mediaPlayerComponent);
+        mediaPlayerComponent.getMediaPlayer().setVolume(150);
+        mediaPlayerComponent.getMediaPlayer().playMedia(audio);
+        tela.jInternalFrame1.setVisible(true);
+    }
 }

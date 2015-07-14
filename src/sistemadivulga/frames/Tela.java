@@ -5,7 +5,6 @@
  */
 package sistemadivulga.frames;
 
-import bemajava.*;
 import com.gtranslate.Audio;
 import com.gtranslate.Language;
 import java.awt.Color;
@@ -26,7 +25,9 @@ import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import java.io.ByteArrayInputStream;  
 import java.io.InputStream;  
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;  
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -54,16 +55,12 @@ public class Tela extends javax.swing.JFrame {
     static int contador =0;
     static int totalCount = 0;
     static int count = 0;
+    static int video = 0;
     static String [] titulo = new String[100];
     static String [] desc = new String[100];
     static JLabel [] imagem = new JLabel[100];
-    static Timer timer = new Timer(2000, null);
+    static Timer timer = new Timer(20000, null);
     static int TipoNoticia = 0;
-    
-    /**
-     * Creates new form SistemaDivulga
-     */
-    
     private static PrintService impressora;
     
     @SuppressWarnings("WaitWhileNotSynced")
@@ -189,8 +186,6 @@ public class Tela extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
         jPPrev.add(jLabel3);
         jLabel3.setBounds(80, 40, 251, 14);
-
-        jLFundoPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/previsao.png"))); // NOI18N
         jPPrev.add(jLFundoPrev);
         jLFundoPrev.setBounds(0, 0, 370, 70);
 
@@ -202,31 +197,24 @@ public class Tela extends javax.swing.JFrame {
 
         jLTitulo.setFont(new java.awt.Font("Square721 BT", 0, 30)); // NOI18N
         jLTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLTitulo.setText("<titulo>");
 
         jLNoticia.setFont(new java.awt.Font("Square721 BT", 2, 18)); // NOI18N
         jLNoticia.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNoticia.setText("<noticia>");
 
         jLData.setFont(new java.awt.Font("Square721 BT", 2, 14)); // NOI18N
         jLData.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLData.setText("<data>");
 
         jLFonte.setFont(new java.awt.Font("Square721 BT", 2, 14)); // NOI18N
         jLFonte.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLFonte.setText("<fonte>");
 
         jLTitulo1.setFont(new java.awt.Font("Square721 BT", 0, 30)); // NOI18N
         jLTitulo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLTitulo1.setText("<titulo>");
 
         jLNoticia1.setFont(new java.awt.Font("Square721 BT", 2, 18)); // NOI18N
         jLNoticia1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNoticia1.setText("<noticia>");
 
         jLImagem.setFont(new java.awt.Font("Square721 BT", 2, 18)); // NOI18N
         jLImagem.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLImagem.setText("<imagem>");
 
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
@@ -268,12 +256,12 @@ public class Tela extends javax.swing.JFrame {
                 .addComponent(jLFonte, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(jLData, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addContainerGap(245, Short.MAX_VALUE))
             .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jInternalFrame1Layout.createSequentialGroup()
                     .addGap(10, 10, 10)
                     .addComponent(jLTitulo)
-                    .addContainerGap(423, Short.MAX_VALUE)))
+                    .addContainerGap(461, Short.MAX_VALUE)))
             .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jInternalFrame1Layout.createSequentialGroup()
                     .addContainerGap(190, Short.MAX_VALUE)
@@ -287,21 +275,21 @@ public class Tela extends javax.swing.JFrame {
         jLNReg.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNReg.setForeground(new java.awt.Color(103, 143, 200));
         jLNReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNReg.setText("90");
+        jLNReg.setText("100");
         getContentPane().add(jLNReg);
         jLNReg.setBounds(990, 650, 180, 70);
 
         jLNCer.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNCer.setForeground(new java.awt.Color(255, 255, 255));
         jLNCer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNCer.setText("90");
+        jLNCer.setText("100");
         getContentPane().add(jLNCer);
         jLNCer.setBounds(994, 300, 180, 70);
 
         jLNCerP.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNCerP.setForeground(new java.awt.Color(153, 130, 204));
         jLNCerP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNCerP.setText("90");
+        jLNCerP.setText("100");
         getContentPane().add(jLNCerP);
         jLNCerP.setBounds(990, 500, 180, 70);
         getContentPane().add(jLReg);
@@ -317,9 +305,9 @@ public class Tela extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     public void BeginTimer() {
-//        timer.addActionListener(Exame);
+//        timer.addActionListener(G1);
 //        timer.start();
-        rodaVideo("Dengue_Sintomas.swf");
+        rodaVideo();
     }
     
     public String[] parsePrevisao(){
@@ -374,6 +362,7 @@ public class Tela extends javax.swing.JFrame {
                     }else{
                         jLTitulo1.setVisible(false);
                     }
+                    
                     i = desc[totalCount].length()/2;
                     if(i > 15){
                         while(espaco != ' '){
@@ -394,10 +383,11 @@ public class Tela extends javax.swing.JFrame {
                     }else{
                         jLNoticia1.setVisible(false);
                     }
+                    
                     jLImagem.setText(null);
                     jLImagem.setIcon(imagem[totalCount].getIcon());
                     totalCount++;
-                    if(totalCount == 10){
+                    if((totalCount == 10)||(totalCount == 20)){
                         totalCount = 0;
                         parseG1();
                         timer.removeActionListener(Exame);
@@ -445,8 +435,9 @@ public class Tela extends javax.swing.JFrame {
                         aux[1] = null;
                 }
                 if(aux[0].length()>=1){
-                if(aux[0].charAt(0)=='<') aux[0] = "";
+                    if(aux[0].charAt(0)=='<') aux[0] = "";
                 }
+                
                 jLNoticia.setText(aux[0]);
                 if (aux[1] != null){
                         jLNoticia1.setVisible(true);
@@ -457,13 +448,12 @@ public class Tela extends javax.swing.JFrame {
                 totalCount++;
                 if(totalCount == 10){
                     timer.stop();
-                    rodaVideo("Dengue_Sintomas.swf");
-                    totalCount = 0;
+                    rodaVideo();
+                    totalCount++;
                 }
                 }
             };
             
-    
     public void parseG1(){
             RSSFeedParser parser = new RSSFeedParser("http://g1.globo.com/dynamo/brasil/rss2.xml");
             Feed feed = parser.readFeed();
@@ -471,7 +461,10 @@ public class Tela extends javax.swing.JFrame {
             int n = 0;
             JLabel not = new JLabel();
             this.jLFonte.setText("g1.globo.com");
-            this.jLData.setText("Atualizado em 29/06/2015");
+            Instant i = Instant.now();
+            LocalDateTime ldt = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+            this.jLData.setText("Atualizado em " + ldt.getDayOfMonth() + "/" + ldt.getMonth() + "/" + ldt.getYear());
+            this.jLImagem.setVisible(false);
             for (FeedMessage message : feed.getMessages()) {
                 titulo[contador]= new String(message.getTitle());
                 desc[contador]= new String(message.getDescription());
@@ -490,6 +483,7 @@ public class Tela extends javax.swing.JFrame {
         JLabel not = new JLabel();
         this.jLFonte.setText("exame.abril.com.br");
         this.jLData.setText(feed.items.get(0).pubDate);
+        this.jLImagem.setVisible(true);
         for (Item lista : feed.items) {
             Image image = null;
             String [] aux = lista.description.split("src='", 2);
@@ -520,7 +514,7 @@ public class Tela extends javax.swing.JFrame {
         contador = 0;        
     }
     
-    public void rodaVideo(String nome){
+    public void rodaVideo(){
         jLTitulo.setVisible(false);
         jLTitulo1.setVisible(false);
         jLNoticia.setVisible(false);
@@ -532,7 +526,18 @@ public class Tela extends javax.swing.JFrame {
         EmbeddedMediaPlayerComponent mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
         mediaPlayerComponent.setBounds(0, 0, 800,500);
         this.jInternalFrame1.getContentPane().add(mediaPlayerComponent);
-        mediaPlayerComponent.getMediaPlayer().playMedia(nome);
+        mediaPlayerComponent.getMediaPlayer().setVolume(0);
+        if (video==0){
+            mediaPlayerComponent.getMediaPlayer().playMedia("amamentacao.mp4");
+            mediaPlayerComponent.getMediaPlayer().setVolume(0);
+            video++;
+        }else if (video==1){
+            mediaPlayerComponent.getMediaPlayer().playMedia("Dengue_Sintomas.swf");
+            video++;
+        }else if (video==2){
+            mediaPlayerComponent.getMediaPlayer().playMedia("tabagismo.mp4");
+            video = 0;
+        }
         
         mediaPlayerComponent.getMediaPlayer().addMediaPlayerEventListener(new MediaPlayerEventAdapter(){
             @Override
@@ -672,7 +677,7 @@ public class Tela extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JInternalFrame jInternalFrame1;
+    public javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLCer;
     private javax.swing.JLabel jLCerP;
     private javax.swing.JLabel jLData;
