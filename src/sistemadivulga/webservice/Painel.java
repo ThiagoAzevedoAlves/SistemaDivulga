@@ -18,9 +18,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.paint.Color;
 import javax.jws.WebService;
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -30,7 +27,6 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javazoom.jl.decoder.JavaLayerException;
@@ -55,12 +51,12 @@ public class Painel implements server {
     public int cert, cert_a;
     public int cert_pref, cert_pref_a;
     public int reg, reg_a;
+    public int last;
     
     public void TimerCertidao() {
         tempo = 0;
         c = new chamada();
         c.setVisible(true);
-        
         c.JlSenha.setText(Integer.toString(cert_a));
         c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
@@ -74,12 +70,11 @@ public class Painel implements server {
         timer.addActionListener(Certidoes);
         timer.start();
     }
-    
+        
     public void TimerPreferencial() {
         tempo = 0;
         c = new chamada();
         c.setVisible(true);
-        cert_pref_a = cert_pref_a+1;
         c.JlSenha.setText(Integer.toString(cert_pref_a));
         c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
@@ -93,12 +88,11 @@ public class Painel implements server {
         timer.addActionListener(Preferencial);
         timer.start();
     }
-    
+        
     public void TimerRegistros() {
         tempo = 0;
         c = new chamada();
         c.setVisible(true);
-        reg_a = reg_a+1;
         c.JlSenha.setText(Integer.toString(reg_a));
         c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
@@ -203,22 +197,34 @@ public class Painel implements server {
     public Painel(){
         this.cert = 100;
         this.cert_a = 100;
-        this.cert_pref = 100;
-        this.cert_pref_a = 100;
-        this.reg = 100;
-        this.reg_a = 100;
+        this.cert_pref = 0;
+        this.cert_pref_a = 0;
+        this.reg = 200;
+        this.reg_a = 200;
+        this.last = 0;
         this.tela = new Tela();
         tela.setVisible(true);
     }
     
     
     @Override
-    public void AutomaticoCert() {
-        if((this.cert_pref>this.cert_pref_a)){
-            cert_pref_a++;
-            this.chamaCertPref(String.valueOf(this.cert_pref_a+1));
-        }else if((this.cert_pref<this.cert_pref_a) && (this.cert>this.cert_a)){
-            this.chamaCert(String.valueOf(this.cert_a+1));
+    public void AutomaticoCert(){
+        if((this.cert_pref>this.cert_pref_a)){ //se tiver preferencial em espera
+            if (last==0){ //se o ultimo chamado foi certidao normal
+                cert_pref_a++;
+                this.chamaCertPref(String.valueOf(this.cert_pref_a)); //chama preferencial
+                last=1;
+            }else if (last==1){ //se o ultimo chamado foi certidao preferencial 
+                if((this.cert>this.cert_a)){ //se tem certidao em espera
+                    cert_a++;
+                    this.chamaCert(String.valueOf(this.cert_a)); //chama certidao
+                    last = 0;
+                }
+            }
+        }else if((this.cert>this.cert_a)){
+            cert_a++;
+            this.chamaCert(String.valueOf(this.cert_a));
+            last = 0;
         }
     }
     
@@ -226,7 +232,8 @@ public class Painel implements server {
     public void CertidaoProximo() {
         if((this.cert>this.cert_a)){
             cert_a++;
-            this.chamaCert(String.valueOf(this.cert_a+1));
+            this.chamaCert(String.valueOf(this.cert_a));
+            last = 0;
         }
     }
     
@@ -234,7 +241,8 @@ public class Painel implements server {
     public void PreferencialProximo() {
         if((this.cert_pref>this.cert_pref_a)){
             cert_pref_a++;
-            this.chamaCertPref(String.valueOf(this.cert_pref_a+1));
+            this.chamaCertPref(String.valueOf(this.cert_pref_a));
+            last = 1;
         }
     }
     
@@ -242,13 +250,18 @@ public class Painel implements server {
     public void RegistrosProximo() {
         if(this.reg>this.reg_a){
             reg_a++;
-            this.chamaReg(String.valueOf(this.reg_a+1));
+            this.chamaReg(String.valueOf(this.reg_a));
         }
     }
     
     @Override
     public void RepeteRegistros() {
         this.chamaReg(String.valueOf(this.reg_a));
+    }
+    
+    @Override
+    public void RepeteCertidoes() {
+        this.chamaCert(String.valueOf(this.cert_a));
     }
     
     @Override
@@ -262,6 +275,11 @@ public class Painel implements server {
     }
     
     @Override
+    public int TotalRegistros() {
+        return reg_a;
+    }
+    
+    @Override
     public int [] FilaCertidoes() {
         int [] ret = new int[2];
         ret[0]= cert-cert_a;
@@ -270,8 +288,11 @@ public class Painel implements server {
     }
     
     @Override
-    public void RepeteCertidoes() {
-        this.chamaCert(String.valueOf(this.cert_a));
+    public int [] TotalCertidoes() {
+        int [] ret = new int[2];
+        ret[0]= cert_a;
+        ret[1]= cert_pref_a;
+        return ret;
     }
     
     public void chamaCert(String numero){
@@ -285,7 +306,6 @@ public class Painel implements server {
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(certidao);
             audio.play(senha);
-            
         } catch (IOException | JavaLayerException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
@@ -318,13 +338,12 @@ public class Painel implements server {
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(certidao);
             audio.play(senha);
-            
         } catch (IOException | JavaLayerException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
     
-      
+    
     public static List<String> retornaImressoras(){  
         try {  
             List<String> listaImpressoras = new ArrayList<>();  

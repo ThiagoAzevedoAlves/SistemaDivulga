@@ -22,7 +22,9 @@ public interface server {
     @WebMethod void RepeteCertidoes();
     @WebMethod void RepetePreferencial();
     @WebMethod int FilaRegistros();
+    @WebMethod int TotalRegistros();
     @WebMethod int [] FilaCertidoes();
+    @WebMethod int [] TotalCertidoes();
     @WebMethod void ImprimePreferencial();
     @WebMethod void ImprimeCertidoes();
     @WebMethod void ImprimeRegistros();

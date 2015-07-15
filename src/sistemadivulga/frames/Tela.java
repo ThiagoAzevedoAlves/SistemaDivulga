@@ -275,7 +275,7 @@ public class Tela extends javax.swing.JFrame {
         jLNReg.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNReg.setForeground(new java.awt.Color(103, 143, 200));
         jLNReg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNReg.setText("100");
+        jLNReg.setText("200");
         getContentPane().add(jLNReg);
         jLNReg.setBounds(990, 650, 180, 70);
 
@@ -289,7 +289,7 @@ public class Tela extends javax.swing.JFrame {
         jLNCerP.setFont(new java.awt.Font("Square721 BT", 0, 60)); // NOI18N
         jLNCerP.setForeground(new java.awt.Color(153, 130, 204));
         jLNCerP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLNCerP.setText("100");
+        jLNCerP.setText("0");
         getContentPane().add(jLNCerP);
         jLNCerP.setBounds(990, 500, 180, 70);
         getContentPane().add(jLReg);
