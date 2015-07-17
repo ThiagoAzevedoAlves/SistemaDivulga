@@ -15,7 +15,6 @@ import javax.swing.ImageIcon;
  * @author Thiago
  */
 public class chamada extends javax.swing.JFrame {
-
     /**
      * Creates new form chamada
      */
@@ -50,7 +49,7 @@ public class chamada extends javax.swing.JFrame {
         JlSenha.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         JlSenha.setText("10");
         getContentPane().add(JlSenha);
-        JlSenha.setBounds(240, 310, 830, 90);
+        JlSenha.setBounds(225, 300, 830, 90);
         getContentPane().add(jLsetor);
         jLsetor.setBounds(240, 100, 830, 610);
         getContentPane().add(jLabel1);

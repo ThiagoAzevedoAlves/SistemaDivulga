@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jws.WebService;
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -44,7 +46,7 @@ public class Painel implements server {
     
     public static PrintService impressora;
     public static Tela tela;
-    public chamada c;
+    public chamada c = new chamada();
     public static Timer timer = new Timer(5000, null);
     public static int tempo = 0;
     
@@ -55,10 +57,8 @@ public class Painel implements server {
     
     public void TimerCertidao() {
         tempo = 0;
-        c = new chamada();
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(cert_a));
-        c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
         BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImg.createGraphics();
@@ -73,10 +73,8 @@ public class Painel implements server {
         
     public void TimerPreferencial() {
         tempo = 0;
-        c = new chamada();
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(cert_pref_a));
-        c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
         BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImg.createGraphics();
@@ -91,10 +89,8 @@ public class Painel implements server {
         
     public void TimerRegistros() {
         tempo = 0;
-        c = new chamada();
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(reg_a));
-        c.JlSenha.setBounds(c.JlSenha.getX()-15, c.JlSenha.getY()-10, c.JlSenha.getWidth(), c.JlSenha.getHeight());
         //fundo------------------------------------------------------------------------------------//
         BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImg.createGraphics();
@@ -107,52 +103,46 @@ public class Painel implements server {
         timer.start();
     }
     
-    public ActionListener Certidoes = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-                java.awt.EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        if (tempo==0){
-                            tempo = 1;                            
-                            tela.jLNCer.setText(Integer.toString(cert_a));
-                        }else{
-                            timer.stop();
-                            c.dispose();
-                        }
-                    }
-                });
-        }
+    public ActionListener Certidoes = (ActionEvent evt) -> {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                if (tempo==0){
+                    tempo = 1;
+                    tela.jLNCer.setText(Integer.toString(cert_a));
+                }else{
+                    timer.stop();
+                    c.setVisible(false);
+                }
+            }
+        });
     };
     
-    public ActionListener Preferencial = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-                java.awt.EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        if (tempo==0){
-                            tempo = 1;                            
-                            tela.jLNCerP.setText(Integer.toString(cert_pref_a));
-                        }else{
-                            timer.stop();
-                            c.dispose();
-                        }
-                    }
-                });
-        }
+    public ActionListener Preferencial = (ActionEvent evt) -> {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                if (tempo==0){
+                    tempo = 1;
+                    tela.jLNCerP.setText(Integer.toString(cert_pref_a));
+                }else{
+                    timer.stop();
+                    c.setVisible(false);
+                }
+            }
+        });
     };
     
-    public ActionListener Registros = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-                java.awt.EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        if (tempo==0){
-                            tempo = 1;                            
-                            tela.jLNReg.setText(Integer.toString(reg_a));
-                        }else{
-                            timer.stop();
-                            c.dispose();
-                        }
-                    }
-                });
-        }
+    public ActionListener Registros = (ActionEvent evt) -> {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                if (tempo==0){
+                    tempo = 1;
+                    tela.jLNReg.setText(Integer.toString(reg_a));
+                }else{
+                    timer.stop();
+                    c.setVisible(false);
+                }
+            }
+        });
     };
     
     @Override
@@ -204,6 +194,7 @@ public class Painel implements server {
         this.last = 0;
         this.tela = new Tela();
         tela.setVisible(true);
+        c.setVisible(false);
     }
     
     
@@ -306,6 +297,11 @@ public class Painel implements server {
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(certidao);
             audio.play(senha);
+            try{
+                timer.wait(2000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         } catch (IOException | JavaLayerException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
@@ -322,6 +318,11 @@ public class Painel implements server {
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(registros);
             audio.play(senha);
+            try{
+                timer.wait(2000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         } catch (IOException | JavaLayerException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
@@ -338,6 +339,11 @@ public class Painel implements server {
             senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
             audio.play(certidao);
             audio.play(senha);
+            try{
+                timer.wait(2000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         } catch (IOException | JavaLayerException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
