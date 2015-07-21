@@ -18,8 +18,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jws.WebService;
 import javax.print.Doc;
 import javax.print.DocFlavor;
@@ -32,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javazoom.jl.decoder.JavaLayerException;
+import sistemadivulga.database.Database;
 import sistemadivulga.frames.Tela;
 import sistemadivulga.frames.chamada;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
@@ -50,10 +49,36 @@ public class Painel implements server {
     public static Timer timer = new Timer(5000, null);
     public static int tempo = 0;
     
+    public int [] guicheCert;
+    public int [] guicheReg;
+    public List histgui;
+    public List histsen;
+    
     public int cert, cert_a;
     public int cert_pref, cert_pref_a;
     public int reg, reg_a;
     public int last;
+    
+    public Painel(){
+        this.cert = 105;
+        this.cert_a = 100;
+        this.cert_pref = 5;
+        this.cert_pref_a = 0;
+        this.reg = 205;
+        this.reg_a = 200;
+        this.last = 0;
+        this.tela = new Tela();
+        tela.setVisible(true);
+        c.setVisible(false);
+        guicheCert = null;
+        guicheReg = null;
+        histgui = new ArrayList();
+        histsen = new ArrayList();
+        Database d = new Database();
+        d.connect();
+//        this.cert_a++;
+//        JOptionPane.showMessageDialog(null, d.atualizaCert(d.getId(), cert_a));
+    }
     
     public void TimerCertidao() {
         tempo = 0;
@@ -184,20 +209,6 @@ public class Painel implements server {
         cert++;
     }
     
-    public Painel(){
-        this.cert = 100;
-        this.cert_a = 100;
-        this.cert_pref = 0;
-        this.cert_pref_a = 0;
-        this.reg = 200;
-        this.reg_a = 200;
-        this.last = 0;
-        this.tela = new Tela();
-        tela.setVisible(true);
-        c.setVisible(false);
-    }
-    
-    
     @Override
     public void AutomaticoCert(){
         if((this.cert_pref>this.cert_pref_a)){ //se tiver preferencial em espera
@@ -229,6 +240,17 @@ public class Painel implements server {
     }
     
     @Override
+    public void CertidaoProximo2(int guiche) {
+        if((this.cert>this.cert_a)){
+            cert_a++;
+            histgui.add(guiche);
+            histsen.add(cert_a);
+            this.chamaCert(String.valueOf(this.cert_a));
+            last = 0;
+        }
+    }
+    
+    @Override
     public void PreferencialProximo() {
         if((this.cert_pref>this.cert_pref_a)){
             cert_pref_a++;
@@ -238,9 +260,30 @@ public class Painel implements server {
     }
     
     @Override
+    public void PreferencialProximo2(int guiche) {
+        if((this.cert_pref>this.cert_pref_a)){
+            cert_pref_a++;
+            histgui.add(guiche);
+            histsen.add(cert_pref_a);
+            this.chamaCertPref(String.valueOf(this.cert_pref_a));
+            last = 1;
+        }
+    }
+    
+    @Override
     public void RegistrosProximo() {
         if(this.reg>this.reg_a){
             reg_a++;
+            this.chamaReg(String.valueOf(this.reg_a));
+        }
+    }
+    
+    @Override
+    public void RegistrosProximo2(int guiche) {
+        if(this.reg>this.reg_a){
+            reg_a++;
+            histgui.add(guiche);
+            histsen.add(reg_a);
             this.chamaReg(String.valueOf(this.reg_a));
         }
     }
@@ -298,7 +341,7 @@ public class Painel implements server {
             audio.play(certidao);
             audio.play(senha);
             try{
-                timer.wait(2000);
+                Thread.sleep(4000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -319,7 +362,7 @@ public class Painel implements server {
             audio.play(registros);
             audio.play(senha);
             try{
-                timer.wait(2000);
+                Thread.sleep(4000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -340,7 +383,7 @@ public class Painel implements server {
             audio.play(certidao);
             audio.play(senha);
             try{
-                timer.wait(2000);
+                Thread.sleep(4000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -348,8 +391,7 @@ public class Painel implements server {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
-    
-    
+        
     public static List<String> retornaImressoras(){  
         try {  
             List<String> listaImpressoras = new ArrayList<>();  
@@ -451,8 +493,7 @@ public class Painel implements server {
     public void imprimeNegrito(String texto){
         imprime(""+(char)27+(char)69 + texto +(char)27+(char)70);
     }
-    
-    
+        
     public void rodaAudio(String audio){
         
         boolean found = new NativeDiscovery().discover();
@@ -465,4 +506,52 @@ public class Painel implements server {
         mediaPlayerComponent.getMediaPlayer().playMedia(audio);
         tela.jInternalFrame1.setVisible(true);
     }
+    
+    @Override
+    public void IniciaGuiche(int numero, int tipo){
+        if (tipo == 0){ //se for guiche de certidoes
+            if(guicheCert == null){
+                guicheCert = new int[5];
+                guicheCert[0] = numero;
+                guicheCert[1] = 0;
+                guicheCert[2] = 0;
+                guicheCert[3] = 0;
+                guicheCert[4] = 0;
+            }else{
+                for(int i = 0; i<5;i++){
+                    if(guicheCert[i]== 0){
+                        guicheCert[i]= numero;
+                        JOptionPane.showMessageDialog(null, "[ "+ guicheCert[0]+" , "+ guicheCert[1]+" , "+ guicheCert[2]+" , "+guicheCert[3]+" , "+ guicheCert[4]+" ]");
+                        break;
+                    }else{
+                        if(guicheCert[i]== numero){
+                            JOptionPane.showMessageDialog(null, "Já existe um Giche com este número.");
+                            break;
+                        }                        
+                    }
+                }
+            }
+        }else{ //caso seja um guiche de registros
+            if(guicheReg == null){
+                guicheReg = new int[2];
+                guicheReg[0] = numero;
+                guicheReg[1] = 0;
+            }else{
+                for(int i = 0; i<2;i++){
+                    if(guicheReg[i]== 0){
+                        guicheReg[i]= numero;
+                        JOptionPane.showMessageDialog(null, "[ "+ guicheReg[0]+" , "+ guicheReg[1]+" ]");
+                        break;
+                    }else{
+                        if(guicheReg[i]== numero){
+                            JOptionPane.showMessageDialog(null, "Já existe um Giche com este número.");
+                            break;
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+    
 }

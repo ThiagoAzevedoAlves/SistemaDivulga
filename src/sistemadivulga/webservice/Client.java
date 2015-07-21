@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+import sistemadivulga.webservice.server;
 
 /**
  *
@@ -28,9 +29,10 @@ public class Client {
                 this.qname = new QName("http://webservice.sistemadivulga/","PainelService");
                 this.ws = Service.create(url, qname);
                 s = ws.getPort(server.class);
-//                s.CertidaoProximo();
             } catch (MalformedURLException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         }
+        
+        
 }

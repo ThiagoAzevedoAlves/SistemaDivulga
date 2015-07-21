@@ -132,8 +132,10 @@ public class Tela extends javax.swing.JFrame {
         //-----------------------------------------------------------------------------------------//
         
         //prepara Parser Exame---------------------------------------------------------------//
+        
         parseExame();
         BeginTimer();
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -487,11 +489,20 @@ public class Tela extends javax.swing.JFrame {
         for (Item lista : feed.items) {
             Image image = null;
             String [] aux = lista.description.split("src='", 2);
-            String [] aux2 = aux[1].split("'></p>", 2);
-            String [] daux = aux[0].split("<p>", 2);
-            String [] daux2 = daux[1].split("</p>", 2);
+            String [] aux2 = null;
+            String [] daux = null;
+            String [] daux2 = null;
             titulo[contador]= new String(lista.title);
-            desc[contador] = new String(daux2[0]);
+            try{
+                aux2 = aux[1].split("'></p>", 2);
+                daux = aux[0].split("<p>", 2);
+                daux2 = daux[1].split("</p>", 2);
+                desc[contador] = new String(daux2[0]);
+            }catch(ArrayIndexOutOfBoundsException ex){
+                aux = lista.description.split("src=\"", 2);
+                aux2 = aux[1].split("'></p>", 2);
+                desc[contador] = new String();
+            }            
             try{
                 URL url = new URL(aux2[0]); 
                 image = ImageIO.read(url);
@@ -553,8 +564,7 @@ public class Tela extends javax.swing.JFrame {
                 jLNoticia1.setVisible(true);
                 jLFonte.setVisible(true);
                 jLData.setVisible(true);
-                jLImagem.setVisible(true);
-                
+                jLImagem.setVisible(true);                
             };
         });
     }

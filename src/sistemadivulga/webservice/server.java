@@ -14,6 +14,7 @@ import javax.jws.soap.SOAPBinding.Style;
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface server {
+    
     @WebMethod void CertidaoProximo();
     @WebMethod void PreferencialProximo();
     @WebMethod void RegistrosProximo();
@@ -21,6 +22,11 @@ public interface server {
     @WebMethod void RepeteRegistros();
     @WebMethod void RepeteCertidoes();
     @WebMethod void RepetePreferencial();
+    
+    @WebMethod void CertidaoProximo2(int guiche);
+    @WebMethod void PreferencialProximo2(int guiche);
+    @WebMethod void RegistrosProximo2(int guiche);
+    
     @WebMethod int FilaRegistros();
     @WebMethod int TotalRegistros();
     @WebMethod int [] FilaCertidoes();
@@ -28,5 +34,7 @@ public interface server {
     @WebMethod void ImprimePreferencial();
     @WebMethod void ImprimeCertidoes();
     @WebMethod void ImprimeRegistros();
+    @WebMethod void IniciaGuiche(int numero, int tipo);
+    
 }
 
