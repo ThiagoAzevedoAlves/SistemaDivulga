@@ -8,7 +8,6 @@ package sistemadivulga;
 
 
 import javax.xml.ws.Endpoint;
-import sistemadivulga.database.Database;
 import sistemadivulga.webservice.Painel;
 
 /**
@@ -23,8 +22,7 @@ public class SistemaDivulga {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Endpoint.publish("http://192.168.2.237:9876/webservice", new Painel());
-                
+                Endpoint.publish("http://192.168.0.100:9876/webservice", new Painel());
             }
         });
     }

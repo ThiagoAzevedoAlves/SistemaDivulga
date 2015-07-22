@@ -43,6 +43,7 @@ import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 @WebService(endpointInterface = "sistemadivulga.webservice.server")
 public class Painel implements server {
     
+    public Database d;
     public static PrintService impressora;
     public static Tela tela;
     public chamada c = new chamada();
@@ -60,24 +61,40 @@ public class Painel implements server {
     public int last;
     
     public Painel(){
-        this.cert = 105;
-        this.cert_a = 100;
-        this.cert_pref = 5;
-        this.cert_pref_a = 0;
-        this.reg = 205;
-        this.reg_a = 200;
+        d = new Database();
+        d.connect();
+        d.Inicia();
+        this.CarregaDados();          
+    }
+    
+    public void CarregaDados(){
+        if(d.getId() > 0){
+            this.cert_a = d.getCertAtual();
+            this.cert_pref_a = d.getPrefAtual();
+            this.reg_a = d.getRegAtual();            
+            this.cert = d.getCertFinal();
+            this.cert_pref = d.getPrefFinal();
+            this.reg = d.getRegFinal();
+        }else{            
+            d.Inicia();
+            this.cert = 100;
+            this.cert_a = 100;
+            this.cert_pref = 0;
+            this.cert_pref_a = 0;
+            this.reg = 200;
+            this.reg_a = 200;
+        }        
         this.last = 0;
         this.tela = new Tela();
+        tela.jLNCer.setText(String.valueOf(cert_a));
+        tela.jLNCerP.setText(String.valueOf(cert_pref_a));
+        tela.jLNReg.setText(String.valueOf(reg_a));
         tela.setVisible(true);
         c.setVisible(false);
         guicheCert = null;
         guicheReg = null;
         histgui = new ArrayList();
         histsen = new ArrayList();
-        Database d = new Database();
-        d.connect();
-//        this.cert_a++;
-//        JOptionPane.showMessageDialog(null, d.atualizaCert(d.getId(), cert_a));
     }
     
     public void TimerCertidao() {
@@ -112,7 +129,7 @@ public class Painel implements server {
         timer.start();
     }
         
-    public void TimerRegistros() {
+    public void TimerRegistros(){
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(reg_a));
@@ -181,6 +198,7 @@ public class Painel implements server {
         this.imprimeReg(Integer.toString(reg+1)+"\n\n\n");
         this.acionarGuilhotina();
         reg++;        
+        d.addReg(d.getId(), reg);
     }
 
     @Override
@@ -194,6 +212,7 @@ public class Painel implements server {
         this.imprimeCertPref(Integer.toString(cert_pref+1)+"\n\n\n");
         this.acionarGuilhotina();
         cert_pref++;
+        d.addPref(d.getId(), cert_pref);
     }
 
     @Override
@@ -207,6 +226,7 @@ public class Painel implements server {
         this.imprimeCert(Integer.toString(cert+1)+"\n\n\n");
         this.acionarGuilhotina();
         cert++;
+        d.addCert(d.getId(), cert);
     }
     
     @Override
@@ -216,17 +236,23 @@ public class Painel implements server {
                 cert_pref_a++;
                 this.chamaCertPref(String.valueOf(this.cert_pref_a)); //chama preferencial
                 last=1;
+                d.atualizaPref(d.getId(), cert_pref_a);
+                tela.jLNCerP.setText(String.valueOf(cert_pref_a));
             }else if (last==1){ //se o ultimo chamado foi certidao preferencial 
                 if((this.cert>this.cert_a)){ //se tem certidao em espera
                     cert_a++;
                     this.chamaCert(String.valueOf(this.cert_a)); //chama certidao
                     last = 0;
+                    d.atualizaCert(d.getId(), cert_a);
+                    tela.jLNCer.setText(String.valueOf(cert_a));
                 }
             }
         }else if((this.cert>this.cert_a)){
             cert_a++;
             this.chamaCert(String.valueOf(this.cert_a));
             last = 0;
+            d.atualizaCert(d.getId(), cert_a);
+            tela.jLNCer.setText(String.valueOf(cert_a));
         }
     }
     
@@ -236,6 +262,8 @@ public class Painel implements server {
             cert_a++;
             this.chamaCert(String.valueOf(this.cert_a));
             last = 0;
+            d.atualizaCert(d.getId(), cert_a);
+            tela.jLNCer.setText(String.valueOf(cert_a));
         }
     }
     
@@ -247,6 +275,8 @@ public class Painel implements server {
             histsen.add(cert_a);
             this.chamaCert(String.valueOf(this.cert_a));
             last = 0;
+            d.atualizaCert(d.getId(), cert_a);
+            tela.jLNCer.setText(String.valueOf(cert_a));
         }
     }
     
@@ -256,6 +286,8 @@ public class Painel implements server {
             cert_pref_a++;
             this.chamaCertPref(String.valueOf(this.cert_pref_a));
             last = 1;
+            d.atualizaPref(d.getId(), cert_pref_a);
+            tela.jLNCerP.setText(String.valueOf(cert_pref_a));
         }
     }
     
@@ -267,6 +299,8 @@ public class Painel implements server {
             histsen.add(cert_pref_a);
             this.chamaCertPref(String.valueOf(this.cert_pref_a));
             last = 1;
+            d.atualizaPref(d.getId(), cert_pref_a);
+            tela.jLNCerP.setText(String.valueOf(cert_pref_a));
         }
     }
     
@@ -275,6 +309,8 @@ public class Painel implements server {
         if(this.reg>this.reg_a){
             reg_a++;
             this.chamaReg(String.valueOf(this.reg_a));
+            d.atualizaReg(d.getId(), reg_a);
+            tela.jLNReg.setText(String.valueOf(reg_a));
         }
     }
     
@@ -285,6 +321,8 @@ public class Painel implements server {
             histgui.add(guiche);
             histsen.add(reg_a);
             this.chamaReg(String.valueOf(this.reg_a));
+            d.atualizaReg(d.getId(), reg_a);
+            tela.jLNReg.setText(String.valueOf(reg_a));
         }
     }
     
@@ -341,7 +379,7 @@ public class Painel implements server {
             audio.play(certidao);
             audio.play(senha);
             try{
-                Thread.sleep(4000);
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -362,7 +400,7 @@ public class Painel implements server {
             audio.play(registros);
             audio.play(senha);
             try{
-                Thread.sleep(4000);
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -383,7 +421,7 @@ public class Painel implements server {
             audio.play(certidao);
             audio.play(senha);
             try{
-                Thread.sleep(4000);
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
