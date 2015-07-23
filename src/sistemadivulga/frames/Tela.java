@@ -25,10 +25,13 @@ import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import java.io.ByteArrayInputStream;  
 import java.io.InputStream;  
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;  
+import java.util.Calendar;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.print.Doc;  
@@ -41,6 +44,7 @@ import javax.print.SimpleDoc;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;  
 import javax.swing.Timer;
+import sistemadivulga.database.Database;
 import sistemadivulga.read.NewParser;
 import sistemadivulga.read.NewParser.Item;
 import sistemadivulga.read.NewParser.RssFeed;
@@ -78,6 +82,8 @@ public class Tela extends javax.swing.JFrame {
         //esconde os titulos e noticias 2 ------------------------------------//
         this.jLTitulo1.setVisible(false);
         this.jLNoticia1.setVisible(false);
+        this.jLData.setVisible(false);
+        this.jLFonte.setVisible(false);
         //--------------------------------------------------------------------//
         
         //fundo------------------------------------------------------------------------------------//
@@ -135,7 +141,6 @@ public class Tela extends javax.swing.JFrame {
         
         parseExame();
         BeginTimer();
-        
     }
 
     @SuppressWarnings("unchecked")
@@ -166,6 +171,11 @@ public class Tela extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(null);
 
         jPPrev.setBackground(new java.awt.Color(255, 255, 255));
@@ -305,6 +315,16 @@ public class Tela extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date currentDate = calendar.getTime();
+        java.sql.Date date = new java.sql.Date(currentDate.getTime());
+        DateFormat dateFormat = new SimpleDateFormat("HH");
+        if(Integer.valueOf(dateFormat.format(date)) >= 17){
+            geraMedia();
+        }
+    }//GEN-LAST:event_formWindowClosing
     
     public void BeginTimer() {
 //        timer.addActionListener(G1);
@@ -686,6 +706,16 @@ public class Tela extends javax.swing.JFrame {
         imprime(""+(char)27+(char)69 + texto +(char)27+(char)70);
     }
     
+    public void geraMedia(){
+        Database d = new Database();
+        d.connect();
+        int mcert = d.getCertFinal()-100;
+        int mpref = d.getPrefFinal();
+        int mreg = d.getRegFinal()-200;
+        d.salvaMedia(mcert, mpref, mreg);
+        JOptionPane.showMessageDialog(null, "<html><center>Média do Dia Gerada:</center><br>Certidões: " + mcert + "<br>Certidões Preferencial: " + mpref + "<br>Registros: " + mreg + "</html>");
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLCer;
@@ -708,6 +738,4 @@ public class Tela extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPPrev;
     // End of variables declaration//GEN-END:variables
-
-    
 }

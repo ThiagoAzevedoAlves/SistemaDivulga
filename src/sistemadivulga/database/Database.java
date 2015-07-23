@@ -12,7 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JOptionPane;
 
 /**
@@ -30,7 +35,7 @@ public class Database {
     public void connect(){
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance(); //carrega o driver do mysql
-            String url = "jdbc:mysql://192.168.0.100:3306/painel?autoReconnect=true"; //acessa a tablea mysql "unimed_biom_teste" no localhost
+            String url = "jdbc:mysql://192.168.2.251:3306/painel?autoReconnect=true"; //acessa a tablea mysql "unimed_biom_teste" no localhost
             String usuario = "Thiago";
             String senha = "root";
             conn = DriverManager.getConnection(url, usuario, senha); //conecta no banco de dados MySql
@@ -46,6 +51,27 @@ public class Database {
             java.util.Date currentDate = calendar.getTime();
             java.sql.Date date = new java.sql.Date(currentDate.getTime());
             prepared = conn.prepareStatement("SELECT id FROM diario WHERE data=?");
+            prepared.setString(1, date.toString());
+            resultSet = prepared.executeQuery();
+            int n;
+            while(resultSet.next()){
+                n = resultSet.getInt(1);
+                return n;
+            }
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "getId - "+ e.getMessage());
+            e.printStackTrace();
+        }
+        return -1;
+    }
+        
+    public int getIdMedia(){
+        try {
+            PreparedStatement prepared;
+            Calendar calendar = Calendar.getInstance();
+            java.util.Date currentDate = calendar.getTime();
+            java.sql.Date date = new java.sql.Date(currentDate.getTime());
+            prepared = conn.prepareStatement("SELECT id FROM media WHERE data=?");
             prepared.setString(1, date.toString());
             resultSet = prepared.executeQuery();
             int n;
@@ -312,8 +338,46 @@ public class Database {
                 preparedStatement.executeUpdate(); //executa o update na tabela
                 existe = true;
             }catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "SALVAOFIC" + "\n" + e.getMessage());            
+                JOptionPane.showMessageDialog(null, "Inicia" + "\n" + e.getMessage());            
             }
         }
     }
+    
+    public void salvaMedia(int mcert, int mpref, int mreg){
+        boolean existe = false;
+        try{            
+            PreparedStatement prepared;
+            Calendar calendar = Calendar.getInstance();
+            java.util.Date currentDate = calendar.getTime();
+            java.sql.Date date = new java.sql.Date(currentDate.getTime());
+            prepared = conn.prepareStatement("SELECT id FROM media WHERE data=?");
+            prepared.setString(1, date.toString());
+            resultSet = prepared.executeQuery();
+            while(resultSet.next()){
+                existe = true;
+            }
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "getId - "+ e.getMessage());
+            e.printStackTrace();
+        }
+        if(existe==false){
+            Calendar calendar = Calendar.getInstance();
+            java.util.Date currentDate = calendar.getTime();
+            java.sql.Date date = new java.sql.Date(currentDate.getTime());
+            try{
+                String sql;
+                sql = "insert into media values(default, ?, ?, ?, ?)";
+                preparedStatement = conn.prepareStatement(sql); //prepara os argumentos;
+                preparedStatement.setString(1, date.toString());
+                preparedStatement.setInt(2, mcert);
+                preparedStatement.setInt(3, mpref);
+                preparedStatement.setInt(4, mreg);
+                preparedStatement.executeUpdate(); //executa o update na tabela
+                existe = true;
+            }catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "salvaMedia" + "\n" + e.getMessage());            
+            }
+        }
+    }
+    
 }

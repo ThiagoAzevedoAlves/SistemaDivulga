@@ -112,10 +112,46 @@ public class Painel implements server {
         timer.addActionListener(Certidoes);
         timer.start();
     }
+    
+    public void TimerCertidaoGuiche(int guiche) {
+        tempo = 0;
+        c.setVisible(true);
+        c.JlSenha.setText(Integer.toString(cert_a));
+        c.jLguiche.setText("GUICHÊ "+ guiche);
+        c.jLguiche.setVisible(true);
+        //fundo------------------------------------------------------------------------------------//
+        BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = resizedImg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(new ImageIcon(getClass().getResource("/recursos/CERTIDOESCHAMAR.png")).getImage(), 0, 0, 800, 600, null);
+        g.dispose();
+        c.jLsetor.setIcon(new javax.swing.ImageIcon(resizedImg));
+        //-----------------------------------------------------------------------------------------//
+        timer.addActionListener(Certidoes);
+        timer.start();
+    }
         
     public void TimerPreferencial() {
         tempo = 0;
         c.setVisible(true);
+        c.JlSenha.setText(Integer.toString(cert_pref_a));
+        //fundo------------------------------------------------------------------------------------//
+        BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = resizedImg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(new ImageIcon(getClass().getResource("/recursos/CERTIDOESPREFCHAMAR.png")).getImage(), 0, 0, 800, 600, null);
+        g.dispose();
+        c.jLsetor.setIcon(new javax.swing.ImageIcon(resizedImg));
+        //-----------------------------------------------------------------------------------------//
+        timer.addActionListener(Preferencial);
+        timer.start();
+    }
+    
+    public void TimerPreferencialGuiche(int guiche) {
+        tempo = 0;
+        c.setVisible(true);
+        c.jLguiche.setText("GUICHÊ "+ guiche);
+        c.jLguiche.setVisible(true);
         c.JlSenha.setText(Integer.toString(cert_pref_a));
         //fundo------------------------------------------------------------------------------------//
         BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
@@ -133,6 +169,24 @@ public class Painel implements server {
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(reg_a));
+        //fundo------------------------------------------------------------------------------------//
+        BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = resizedImg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(new ImageIcon(getClass().getResource("/recursos/REGISTROSCHAMAR.png")).getImage(), 0, 0, 800, 600, null);
+        g.dispose();
+        c.jLsetor.setIcon(new javax.swing.ImageIcon(resizedImg));
+        //-----------------------------------------------------------------------------------------//
+        timer.addActionListener(Registros);
+        timer.start();
+    }
+    
+    public void TimerRegistrosGuiche(int guiche){
+        tempo = 0;
+        c.setVisible(true);
+        c.JlSenha.setText(Integer.toString(reg_a));
+        c.jLguiche.setText("GUICHÊ "+ guiche);
+        c.jLguiche.setVisible(true);
         //fundo------------------------------------------------------------------------------------//
         BufferedImage resizedImg = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImg.createGraphics();
@@ -273,7 +327,7 @@ public class Painel implements server {
             cert_a++;
             histgui.add(guiche);
             histsen.add(cert_a);
-            this.chamaCert(String.valueOf(this.cert_a));
+            this.chamaCertGuiche(String.valueOf(this.cert_a), guiche);
             last = 0;
             d.atualizaCert(d.getId(), cert_a);
             tela.jLNCer.setText(String.valueOf(cert_a));
@@ -297,7 +351,7 @@ public class Painel implements server {
             cert_pref_a++;
             histgui.add(guiche);
             histsen.add(cert_pref_a);
-            this.chamaCertPref(String.valueOf(this.cert_pref_a));
+            this.chamaCertPrefGuiche(String.valueOf(this.cert_pref_a), guiche);
             last = 1;
             d.atualizaPref(d.getId(), cert_pref_a);
             tela.jLNCerP.setText(String.valueOf(cert_pref_a));
@@ -320,7 +374,7 @@ public class Painel implements server {
             reg_a++;
             histgui.add(guiche);
             histsen.add(reg_a);
-            this.chamaReg(String.valueOf(this.reg_a));
+            this.chamaRegGuiche(String.valueOf(this.reg_a), guiche);
             d.atualizaReg(d.getId(), reg_a);
             tela.jLNReg.setText(String.valueOf(reg_a));
         }
@@ -388,8 +442,50 @@ public class Painel implements server {
         }
     }
     
+    public void chamaCertGuiche(String numero, int guiche){
+        TimerCertidaoGuiche(guiche);
+        try {
+            InputStream certidao = null;
+            InputStream senha = null;
+            this.rodaAudio("dong.mp3");
+            Audio audio = Audio.getInstance();
+            certidao = audio.getAudio("Certidões", Language.PORTUGUESE);
+            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
+            audio.play(certidao);
+            audio.play(senha);
+            try{
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException | JavaLayerException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
     public void chamaReg(String numero){
         TimerRegistros();
+        try {
+            InputStream registros = null;
+            InputStream senha = null;
+            Audio audio = Audio.getInstance();
+            this.rodaAudio("dong.mp3");
+            registros = audio.getAudio("Registros, ", Language.PORTUGUESE);
+            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
+            audio.play(registros);
+            audio.play(senha);
+            try{
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException | JavaLayerException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+    public void chamaRegGuiche(String numero, int guiche){
+        TimerRegistrosGuiche(guiche);
         try {
             InputStream registros = null;
             InputStream senha = null;
@@ -429,7 +525,28 @@ public class Painel implements server {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
-        
+    
+    private void chamaCertPrefGuiche(String numero, int guiche){
+        TimerPreferencialGuiche(guiche);
+        try {
+            InputStream certidao = null;
+            InputStream senha = null;
+            Audio audio = Audio.getInstance();
+            this.rodaAudio("dong.mp3");
+            certidao = audio.getAudio("Certidões Preferencial, ", Language.PORTUGUESE);
+            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
+            audio.play(certidao);
+            audio.play(senha);
+            try{
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException | JavaLayerException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
     public static List<String> retornaImressoras(){  
         try {  
             List<String> listaImpressoras = new ArrayList<>();  
