@@ -5,8 +5,6 @@
  */
 package sistemadivulga.webservice;
 
-import com.gtranslate.Audio;
-import com.gtranslate.Language;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -76,6 +74,9 @@ public class Painel implements server {
         this.CarregaDados();          
     }
     
+    /**
+     * Não esquecer de declarar nas Propriedades de Execução do Projeto: -splash:logo.jpg
+     */
     public void splash(){
         final SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash == null) {
@@ -330,7 +331,7 @@ public class Painel implements server {
         if((this.cert_pref>this.cert_pref_a)){ //se tiver preferencial em espera
             if (last==0){ //se o ultimo chamado foi certidao normal
                 cert_pref_a++;
-                this.chamaCertPref(String.valueOf(this.cert_pref_a)); //chama preferencial
+                this.chamaCertPref(); //chama preferencial
                 last=1;
                 d.atualizaPref(d.getId(), cert_pref_a);
                 //d.geraChamado(0);
@@ -338,7 +339,7 @@ public class Painel implements server {
             }else if (last==1){ //se o ultimo chamado foi certidao preferencial 
                 if((this.cert>this.cert_a)){ //se tem certidao em espera
                     cert_a++;
-                    this.chamaCert(String.valueOf(this.cert_a)); //chama certidao
+                    this.chamaCert(); //chama certidao
                     last = 0;
                     d.atualizaCert(d.getId(), cert_a);
                     //d.geraChamado(1);
@@ -347,7 +348,7 @@ public class Painel implements server {
             }
         }else if((this.cert>this.cert_a)){
             cert_a++;
-            this.chamaCert(String.valueOf(this.cert_a));
+            this.chamaCert();
             last = 0;
             d.atualizaCert(d.getId(), cert_a);
             //d.geraChamado(1);
@@ -359,7 +360,7 @@ public class Painel implements server {
     public void CertidaoProximo() {
         if((this.cert>this.cert_a)){
             cert_a++;
-            this.chamaCert(String.valueOf(this.cert_a));
+            this.chamaCert();
             last = 0;
             d.atualizaCert(d.getId(), cert_a);
             //d.geraChamado(1);
@@ -374,7 +375,7 @@ public class Painel implements server {
             cert_a++;
             histgui.add(guiche);
             histsen.add(cert_a);
-            this.chamaCertGuiche(String.valueOf(this.cert_a), guiche);
+            this.chamaCertGuiche(guiche);
             last = 0;
             d.atualizaCert(d.getId(), cert_a);
             //d.geraChamado(1);
@@ -386,7 +387,7 @@ public class Painel implements server {
     public void PreferencialProximo() {
         if((this.cert_pref>this.cert_pref_a)){
             cert_pref_a++;
-            this.chamaCertPref(String.valueOf(this.cert_pref_a));
+            this.chamaCertPref();
             last = 1;
             d.atualizaPref(d.getId(), cert_pref_a);
             
@@ -401,7 +402,7 @@ public class Painel implements server {
             cert_pref_a++;
             histgui.add(guiche);
             histsen.add(cert_pref_a);
-            this.chamaCertPrefGuiche(String.valueOf(this.cert_pref_a), guiche);
+            this.chamaCertPrefGuiche(guiche);
             last = 1;
             d.atualizaPref(d.getId(), cert_pref_a);
             //d.geraChamado(0);
@@ -413,7 +414,7 @@ public class Painel implements server {
     public void RegistrosProximo() {
         if(this.reg>this.reg_a){
             reg_a++;
-            this.chamaReg(String.valueOf(this.reg_a));
+            this.chamaReg();
             d.atualizaReg(d.getId(), reg_a);
             //d.geraChamado(2);
             tela.jLNReg.setText(String.valueOf(reg_a));
@@ -426,7 +427,7 @@ public class Painel implements server {
             reg_a++;
             histgui.add(guiche);
             histsen.add(reg_a);
-            this.chamaRegGuiche(String.valueOf(this.reg_a), guiche);
+            this.chamaRegGuiche(guiche);
             d.atualizaReg(d.getId(), reg_a);
             //d.geraChamado(2);
             
@@ -436,17 +437,17 @@ public class Painel implements server {
     
     @Override
     public void RepeteRegistros() {
-        this.chamaReg(String.valueOf(this.reg_a));
+        this.chamaReg();
     }
     
     @Override
     public void RepeteCertidoes() {
-        this.chamaCert(String.valueOf(this.cert_a));
+        this.chamaCert();
     }
     
     @Override
     public void RepetePreferencial() {
-        this.chamaCertPref(String.valueOf(this.cert_pref_a));
+        this.chamaCertPref();
         
     }
     
@@ -476,137 +477,58 @@ public class Painel implements server {
         return ret;
     }
     
-    public void chamaCert(String numero){
+    public void chamaCert(){
         TimerCertidao();
-//        try {
-            InputStream certidao = null;
-            InputStream senha = null;
-            this.rodaAudio("dong.mp3");
-            this.rodaAudio("certidoes.mp3");
-//            Audio audio = Audio.getInstance();
-//            certidao = audio.getAudio("Certidões", Language.GERMAN);
-//            senha = audio.getAudio("Senha " + numero, Language.GERMAN);
-//            audio.play(certidao);
-//            audio.play(senha);
-            try{
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-//        } catch (IOException | JavaLayerException ex) {
-//            ex.printStackTrace();
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
+        try{
+            this.ContaSenha(1);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public void chamaCertGuiche(String numero, int guiche){
+    public void chamaCertGuiche(int guiche){
         TimerCertidaoGuiche(guiche);
-//        try {
-            InputStream certidao = null;
-            InputStream senha = null;
-            this.rodaAudio("dong.mp3");
-            this.rodaAudio("certidoes.mp3");
-//            Audio audio = Audio.getInstance();
-//            certidao = audio.getAudio("Certidões", Language.PORTUGUESE);
-//            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
-//            audio.play(certidao);
-//            audio.play(senha);
-            try{
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-//        } catch (IOException | JavaLayerException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
+        try{
+            this.ContaSenha(1);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public void chamaReg(String numero){
+    public void chamaReg(){
         TimerRegistros();
-//        try {
-            InputStream registros = null;
-            InputStream senha = null;
-            this.rodaAudio("dong.mp3");
-            this.rodaAudio("registros.mp3");
-//            Audio audio = Audio.getInstance();
-//            registros = audio.getAudio("Registros, ", Language.PORTUGUESE);
-//            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
-//            audio.play(registros);
-//            audio.play(senha);
-            try{
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-//        } catch (IOException | JavaLayerException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
+        try{
+            this.ContaSenha(2);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public void chamaRegGuiche(String numero, int guiche){
+    public void chamaRegGuiche(int guiche){
         TimerRegistrosGuiche(guiche);
-//        try {
-            InputStream registros = null;
-            InputStream senha = null;
-            this.rodaAudio("dong.mp3");
-            this.rodaAudio("registros.mp3");
-//            Audio audio = Audio.getInstance();
-//            registros = audio.getAudio("Registros, ", Language.PORTUGUESE);
-//            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
-//            audio.play(registros);
-//            audio.play(senha);
-            try{
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-//        } catch (IOException | JavaLayerException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
+        try{
+            this.ContaSenha(2);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 
-    private void chamaCertPref(String numero) {
+    private void chamaCertPref() {
         TimerPreferencial();
-//        try {
-            InputStream certidao = null;
-            InputStream senha = null;
-            this.rodaAudio("dong.mp3");
-            this.rodaAudio("preferencial.mp3");
-//            Audio audio = Audio.getInstance();
-//            certidao = audio.getAudio("Preferencial, ", Language.PORTUGUESE);
-//            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
-//            audio.play(certidao);
-//            audio.play(senha);
-            try{
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-//        } catch (IOException | JavaLayerException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
+        try{
+            this.ContaSenha(0);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
-    private void chamaCertPrefGuiche(String numero, int guiche){
+    private void chamaCertPrefGuiche(int guiche){
         TimerPreferencialGuiche(guiche);
-//        try {
-            InputStream certidao = null;
-            InputStream senha = null;
-            this.rodaAudio("dong.mp3");
-            this.rodaAudio("preferencial.mp3");
-//            Audio audio = Audio.getInstance();            
-//            certidao = audio.getAudio("Preferencial, ", Language.PORTUGUESE);
-//            senha = audio.getAudio("Senha " + numero, Language.PORTUGUESE);
-//            audio.play(certidao);
-//            audio.play(senha);
-            try{
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-//        } catch (IOException | JavaLayerException ex) {
-//            JOptionPane.showMessageDialog(null, ex);
-//        }
+        try{
+            this.ContaSenha(0);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public static List<String> retornaImressoras(){  
@@ -774,35 +696,37 @@ public class Painel implements server {
      * 
      * @param tipo 0 if preferencial; 1 if certidão; 2 if registros. 
      */
-    public void ContaSenha(int tipo) throws InterruptedException{
+    public void ContaSenha(int tipo) throws InterruptedException {
         String senha = null;
+        int digito1, digito2, digito3;
+        digito1 = tipo;
+        digito2 = 0;
+        digito3 = 0;
+        
         if (tipo==1){ //se for certidao
             senha = String.valueOf(cert_a); //converte a senha para string
             this.rodaAudio("dong.mp3");
             Thread.sleep(500);
-            
             this.rodaAudio("soar/palavras/certidoes.mp3");
-            Thread.sleep(500);
+            Thread.sleep(1000);
             
             this.rodaAudio("soar/palavras/senha.mp3");
             Thread.sleep(500);
-        } else if (tipo == 2){
+        }else if (tipo == 2){
             senha = String.valueOf(reg_a); //converte a senha para string
             this.rodaAudio("dong.mp3");
             Thread.sleep(500);
-            
             this.rodaAudio("soar/palavras/registros.mp3");
-            Thread.sleep(500);
+            Thread.sleep(1000);
             
             this.rodaAudio("soar/palavras/senha.mp3");
             Thread.sleep(500);
-        } else if (tipo == 0){
+        }else if (tipo == 0){
             senha = String.valueOf(cert_pref_a); //converte a senha para string
             this.rodaAudio("dong.mp3");
             Thread.sleep(500);
-            
             this.rodaAudio("soar/palavras/preferencial.mp3");
-            Thread.sleep(500);
+            Thread.sleep(1000);
             
             this.rodaAudio("soar/palavras/senha.mp3");
             Thread.sleep(500);
@@ -810,94 +734,99 @@ public class Painel implements server {
         
         if (senha.length() < 3){
             if (senha.length() < 2){
-                String aux = "00";
-                senha = aux.concat(senha);
+                digito2  = 0;
+                digito3 = Integer.valueOf(senha);
             }else{
-                String aux = "0";
-                senha = aux.concat(senha);
+                digito2 = Integer.valueOf(senha.substring(0,1));
+                digito3 = Integer.valueOf(senha.substring(1,2));
             }
+        }else{
+            digito2 = Integer.valueOf(senha.substring(1,2));
+            digito3 = Integer.valueOf(senha.substring(2,3));
         }
         
-            if(senha.charAt(0)=='1'){ //se a senha começar em 100
-                if(Integer.valueOf(senha.substring(1,2)) == 0){ //se for menos de 110
-                    if(Integer.valueOf(senha.substring(2,3)) == 0){ //É cem
-                        this.rodaAudio("soar/numeros/100.mp3");
-                    }else{ // É menos de 110 e mais de 100
-                        this.rodaAudio("soar/numeros/100e.mp3");
-                        Thread.sleep(500);
-                        
-                        this.rodaAudio("soar/numeros/" + senha.substring(2,3) + ".mp3");
-                    }
-                }else{ // é entre 110 e 199
+        String sdigito1 = String.valueOf(digito1);
+        String sdigito2 = String.valueOf(digito2);
+        String sdigito3 = String.valueOf(digito3);
+        String sdigito2_3 = sdigito2.concat(sdigito3);
+        
+        if(digito1 == 1){ //se a senha começar em 100
+            if(digito2 == 0){ //se for menos de 110
+                if(digito3 == 0){ //É cem
+                    this.rodaAudio("soar/numeros/100.mp3");
+                }else{ // É menos de 110 e mais de 100
                     this.rodaAudio("soar/numeros/100e.mp3");
                     Thread.sleep(500);
                     
-                    if((Integer.valueOf(senha.substring(2,3)) == 0) || (Integer.valueOf(senha.substring(1,2)) == 1)){ //é multiplo de dez ou entre 11 e 19
-                        this.rodaAudio("soar/numeros/" + senha.substring(1,3) + ".mp3");
+                    this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
+                }
+            }else{ // é entre 110 e 199
+                this.rodaAudio("soar/numeros/100e.mp3");
+                Thread.sleep(400);
+                
+                if((digito3 == 0) || (digito2 == 1)){ //é multiplo de dez ou entre 11 e 19                    
+                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
                     
-                    }else{ //é entre 120 e 199
-                        if(Integer.valueOf(senha.substring(2,3)) == 0){//é multiplo de dez
-                            this.rodaAudio("soar/numeros/" + senha.substring(1,3) + ".mp3");
+                }else{ //é entre 120 e 199
+                    if(digito3 == 0){//é multiplo de dez
+                        this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
                             
-                        }else{
-                            this.rodaAudio("soar/numeros/" + senha.substring(1,2) + "0.mp3");
-                            Thread.sleep(500);
+                    }else{
+                        this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
+                        Thread.sleep(350);
                             
-                            this.rodaAudio("soar/palavras/e.mp3");
-                            Thread.sleep(500);
-                            
-                            this.rodaAudio("soar/numeros/" + senha.substring(2,3) + ".mp3");
-                        }
+                        this.rodaAudio("soar/palavras/e.mp3");
+                        
+                        this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
                     }
                 }
-            }else if(senha.charAt(0)=='2'){
-                if(Integer.valueOf(senha.substring(1,2)) == 0){ //se for menos de 210
-                    if(Integer.valueOf(senha.substring(2,3)) == 0){ //É duzentos
-                        this.rodaAudio("soar/numeros/200.mp3");
-                    }else{ // É menos de 110 e mais de 100
-                        this.rodaAudio("soar/numeros/200e.mp3");
-                        Thread.sleep(500);
-                        
-                        this.rodaAudio("soar/numeros/" + senha.substring(2,3) + ".mp3");
-                    }
-                }else{ // é entre 210 e 299
+            }
+        }else if(digito1 == 2){
+            if(digito2 == 0){ //se for menos de 210
+                if(digito3 == 0){ //É duzentos
+                    this.rodaAudio("soar/numeros/200.mp3");
+                }else{ // É menos de 110 e mais de 100
                     this.rodaAudio("soar/numeros/200e.mp3");
                     Thread.sleep(500);
                     
-                    if((Integer.valueOf(senha.substring(2,3)) == 0) || (Integer.valueOf(senha.substring(1,2)) == 1)){ //é multiplo de dez ou entre 11 e 19
-                        this.rodaAudio("soar/numeros/" + senha.substring(1,3) + ".mp3");
+                    this.rodaAudio("soar/numeros/" + sdigito2 + ".mp3");
+                }
+            }else{ // é entre 210 e 299
+                this.rodaAudio("soar/numeros/200e.mp3");
+                Thread.sleep(400);
+                
+                if((digito3 == 0) || (digito2 == 1)){ //é multiplo de dez ou entre 11 e 19                    
+                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
                     
-                    }else{ //é entre 220 e 299
-                        if(Integer.valueOf(senha.substring(2,3)) == 0){//é multiplo de dez
-                            this.rodaAudio("soar/numeros/" + senha.substring(1,3) + ".mp3");
+                }else{ //é entre 220 e 299
+                    if(digito3 == 0){//é multiplo de dez
+                        this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
                             
-                        }else{
-                            this.rodaAudio("soar/numeros/" + senha.substring(1,2) + "0.mp3");
-                            Thread.sleep(500);
+                    }else{
+                        this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
+                        Thread.sleep(350);
                             
-                            this.rodaAudio("soar/palavras/e.mp3");
-                            Thread.sleep(500);
+                        this.rodaAudio("soar/palavras/e.mp3");
                             
-                            this.rodaAudio("soar/numeros/" + senha.substring(2,3) + ".mp3");
-                        }
+                        this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
                     }
                 }
-            }else if(senha.charAt(0)=='0'){
-                if(senha.charAt(1)=='0'){ //se for menos menos de dez
-                    this.rodaAudio("soar/numeros/" + senha.substring(2,3) + ".mp3");
-                }else if (senha.charAt(1)=='1'){ // é de 10 a 19
-                    this.rodaAudio("soar/numeros/" + senha.substring(1,3) + ".mp3");
-                }else if (senha.charAt(2)=='0'){ // é multiplo de 10
-                    this.rodaAudio("soar/numeros/" + senha.substring(1,2) + "0.mp3");
-                }else{
-                    this.rodaAudio("soar/numeros/" + senha.substring(1,2) + "0.mp3");
-                    Thread.sleep(500);
+            }
+        }else if(digito1 == 0 ){
+            if(digito2 == 0 ){ //se for menos menos de dez
+                this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
+            }else if (digito2 == 1){ // é de 10 a 19
+                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
+            }else if (digito3 == 0 ){ // é multiplo de 10
+                this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
+            }else{
+                this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
+                Thread.sleep(300);
                             
-                    this.rodaAudio("soar/palavras/e.mp3");
-                    Thread.sleep(500);
+                this.rodaAudio("soar/palavras/e.mp3");
                             
-                    this.rodaAudio("soar/numeros/" + senha.substring(2,3) + ".mp3");
-                }
-            }       
+                this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
+            }
+        }       
     }
 }
