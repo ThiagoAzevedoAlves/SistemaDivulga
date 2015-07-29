@@ -12,10 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -35,7 +33,7 @@ public class Database {
     public void connect(){
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance(); //carrega o driver do mysql
-            String url = "jdbc:mysql://192.168.2.251:3306/painel?autoReconnect=true"; //acessa a tablea mysql "unimed_biom_teste" no localhost
+            String url = "jdbc:mysql://192.168.2.251:3306/painel?autoReconnect=true";
             String usuario = "Thiago";
             String senha = "root";
             conn = DriverManager.getConnection(url, usuario, senha); //conecta no banco de dados MySql
@@ -377,6 +375,64 @@ public class Database {
             }catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "salvaMedia" + "\n" + e.getMessage());            
             }
+        }
+    }
+    
+    public void geraAtendimento(int tipo){
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date currentDate = calendar.getTime();
+        java.sql.Date date = new java.sql.Date(currentDate.getTime());
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String horas = dateFormat.format(date).split(":", 2)[0];
+        String minutos = dateFormat.format(date).split(":", 2)[1];
+        String total = dateFormat.format(date);
+        try{
+            String sql;
+            sql = "insert into horariochegada values(default, ?, ?, ?, ?, ?)";
+            preparedStatement = conn.prepareStatement(sql); //prepara os argumentos;
+            preparedStatement.setString(1, date.toString());
+            preparedStatement.setString(2, total);
+            preparedStatement.setInt(3, Integer.valueOf(horas));
+            preparedStatement.setInt(4, Integer.valueOf(minutos));
+            if(tipo == 0){
+                preparedStatement.setString(5, "p");
+            }else if(tipo == 1){
+                preparedStatement.setString(5, "c");
+            }else if(tipo == 2){
+                preparedStatement.setString(5, "r");
+            }            
+            preparedStatement.executeUpdate(); //executa o update na tabela
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "geraAtendimento" + "\n" + e.getMessage());            
+        }
+    }
+    
+    public void geraChamado(int tipo){
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date currentDate = calendar.getTime();
+        java.sql.Date date = new java.sql.Date(currentDate.getTime());
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String horas = dateFormat.format(date).split(":", 2)[0];
+        String minutos = dateFormat.format(date).split(":", 2)[1];
+        String total = dateFormat.format(date);
+        try{
+            String sql;
+            sql = "insert into horariochamada values(default, ?, ?, ?, ?, ?)";
+            preparedStatement = conn.prepareStatement(sql); //prepara os argumentos;
+            preparedStatement.setString(1, date.toString());
+            preparedStatement.setString(2, total);
+            preparedStatement.setInt(3, Integer.valueOf(horas));
+            preparedStatement.setInt(4, Integer.valueOf(minutos));
+            if(tipo == 0){
+                preparedStatement.setString(5, "p");
+            }else if(tipo == 1){
+                preparedStatement.setString(5, "c");
+            }else if(tipo == 2){
+                preparedStatement.setString(5, "r");
+            }            
+            preparedStatement.executeUpdate(); //executa o update na tabela
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "geraAtendimento" + "\n" + e.getMessage());            
         }
     }
     

@@ -72,11 +72,17 @@ public class Tela extends javax.swing.JFrame {
         initComponents();
         this.setSize(1380, 768);        
         //previsao----------------------------------------------//
-        String [] previsao = this.parsePrevisao();
+        try{
+            String [] previsao = this.parsePrevisao();
                 
-        jLabel1.setText(previsao[0]);
-        jLabel2.setText(previsao[1]);
-        jLabel3.setText(previsao[2]);
+            jLabel1.setText(previsao[0]);
+            jLabel2.setText(previsao[1]);
+            jLabel3.setText(previsao[2]);
+        }catch(RuntimeException ex){
+            jLabel1.setText("");
+            jLabel2.setText("ERRO AO OBTER PREVISAO DO TEMPO");
+            jLabel3.setText("");
+        }
         //-----------------------------------------------------//
         
         //esconde os titulos e noticias 2 ------------------------------------//
@@ -139,8 +145,7 @@ public class Tela extends javax.swing.JFrame {
         
         //prepara Parser Exame---------------------------------------------------------------//
         
-        parseExame();
-        BeginTimer();
+        rodaVideo();
     }
 
     @SuppressWarnings("unchecked")
@@ -325,12 +330,6 @@ public class Tela extends javax.swing.JFrame {
             geraMedia();
         }
     }//GEN-LAST:event_formWindowClosing
-    
-    public void BeginTimer() {
-//        timer.addActionListener(G1);
-//        timer.start();
-        rodaVideo();
-    }
     
     public String[] parsePrevisao(){
         String [] ret = new String [3];

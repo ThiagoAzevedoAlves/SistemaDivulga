@@ -22,8 +22,10 @@ public class SistemaDivulga {
        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Endpoint.publish("http://0.0.0.0:9876/webservice", new Painel());
+                    Painel p = new Painel();
+                    Endpoint.publish("http://0.0.0.0:9876/webservice", p);
             }
         });
     }
+    
 }

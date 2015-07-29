@@ -5,7 +5,7 @@
  */
 package sistemadivulga.webservice;
 
-import java.util.ArrayList;
+
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.soap.SOAPBinding;
