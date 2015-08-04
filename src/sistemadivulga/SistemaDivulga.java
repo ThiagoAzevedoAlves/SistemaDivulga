@@ -7,6 +7,8 @@ package sistemadivulga;
  */
 
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import javax.xml.ws.Endpoint;
 import sistemadivulga.webservice.Painel;
 
@@ -19,13 +21,12 @@ public class SistemaDivulga {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-       
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
             public void run() {
-                    Painel p = new Painel();
-                    Endpoint.publish("http://192.168.0.100:9876/webservice", p);
+                Painel p = new Painel();
+                Endpoint.publish("http://0.0.0.0:9876/webservice", p);
             }
         });
     }
-    
 }

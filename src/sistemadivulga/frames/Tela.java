@@ -408,11 +408,10 @@ public class Tela extends javax.swing.JFrame {
                     jLImagem.setText(null);
                     jLImagem.setIcon(imagem[totalCount].getIcon());
                     totalCount++;
-                    if((totalCount == 10)||(totalCount == 20)){
+                    if((totalCount == 20)){
                         totalCount = 0;
-                        parseG1();
                         timer.removeActionListener(Exame);
-                        timer.addActionListener(G1);
+                        rodaVideo();
                     }
                 }                
         };
@@ -574,7 +573,6 @@ public class Tela extends javax.swing.JFrame {
             public void finished(MediaPlayer mediaPlayer) {
                 mediaPlayerComponent.setVisible(false);
                 parseExame();
-                timer.removeActionListener(G1);
                 timer.addActionListener(Exame);
                 timer.start();
                 jLTitulo.setVisible(true);

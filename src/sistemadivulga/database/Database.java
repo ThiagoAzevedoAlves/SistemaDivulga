@@ -33,7 +33,7 @@ public class Database {
     public void connect(){
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance(); //carrega o driver do mysql
-            String url = "jdbc:mysql://192.168.0.100:3306/painel?autoReconnect=true";
+            String url = "jdbc:mysql://192.168.2.251:3306/painel?autoReconnect=true";
             String usuario = "Thiago";
             String senha = "root";
             conn = DriverManager.getConnection(url, usuario, senha); //conecta no banco de dados MySql

@@ -5,6 +5,7 @@
  */
 package sistemadivulga.webservice;
 
+import com.thehowtotutorial.splashscreen.JSplash;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -17,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javazoom.jl.decoder.JavaLayerException;
+import sistemadivulga.SistemaDivulga;
 import sistemadivulga.database.Database;
 import sistemadivulga.frames.Tela;
 import sistemadivulga.frames.chamada;
@@ -63,16 +66,17 @@ public class Painel implements server {
     public int last;
     
     public Painel(){
-//        try{
-//            this.splash();
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
+        try{
+            this.splash();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         d = new Database();
         d.connect();
         d.Inicia();
         this.CarregaDados();          
     }
+    
     
     /**
      * Não esquecer de declarar nas Propriedades de Execução do Projeto: -splash:logo.jpg
@@ -785,11 +789,11 @@ public class Painel implements server {
             if(digito2 == 0){ //se for menos de 210
                 if(digito3 == 0){ //É duzentos
                     this.rodaAudio("soar/numeros/200.mp3");
-                }else{ // É menos de 110 e mais de 100
+                }else{ // É menos de 210 e mais de 200
                     this.rodaAudio("soar/numeros/200e.mp3");
                     Thread.sleep(500);
                     
-                    this.rodaAudio("soar/numeros/" + sdigito2 + ".mp3");
+                    this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
                 }
             }else{ // é entre 210 e 299
                 this.rodaAudio("soar/numeros/200e.mp3");
