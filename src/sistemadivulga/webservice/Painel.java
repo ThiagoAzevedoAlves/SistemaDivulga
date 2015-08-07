@@ -66,40 +66,10 @@ public class Painel implements server {
     public int last;
     
     public Painel(){
-        try{
-            this.splash();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
         d = new Database();
         d.connect();
         d.Inicia();
         this.CarregaDados();          
-    }
-    
-    
-    /**
-     * Não esquecer de declarar nas Propriedades de Execução do Projeto: -splash:logo.jpg
-     */
-    public void splash(){
-        final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash == null) {
-            System.out.println("SplashScreen.getSplashScreen() returned null");
-        }
-        Graphics2D g = splash.createGraphics();
-        if (g == null) {
-            System.out.println("g is null");
-        }
-        for(int i=0; i<100; i++) {
-            renderSplashFrame(g, i);
-            splash.update();
-            try {
-                Thread.sleep(200);
-            }
-            catch(InterruptedException e) {
-            }
-        }
-        splash.close();
     }
     
     static void renderSplashFrame(Graphics2D g, int frame) {
@@ -758,7 +728,7 @@ public class Painel implements server {
             if(digito2 == 0){ //se for menos de 110
                 if(digito3 == 0){ //É cem
                     this.rodaAudio("soar/numeros/100.mp3");
-                }else{ // É menos de 110 e mais de 100
+                }else{
                     this.rodaAudio("soar/numeros/100e.mp3");
                     Thread.sleep(500);
                     
@@ -766,24 +736,9 @@ public class Painel implements server {
                 }
             }else{ // é entre 110 e 199
                 this.rodaAudio("soar/numeros/100e.mp3");
-                Thread.sleep(400);
-                
-                if((digito3 == 0) || (digito2 == 1)){ //é multiplo de dez ou entre 11 e 19                    
-                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
+                Thread.sleep(500);
                     
-                }else{ //é entre 120 e 199
-                    if(digito3 == 0){//é multiplo de dez
-                        this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
-                            
-                    }else{
-                        this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
-                        Thread.sleep(350);
-                            
-                        this.rodaAudio("soar/palavras/e.mp3");
-                        
-                        this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
-                    }
-                }
+                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
             }
         }else if(digito1 == 2){
             if(digito2 == 0){ //se for menos de 210
@@ -797,39 +752,15 @@ public class Painel implements server {
                 }
             }else{ // é entre 210 e 299
                 this.rodaAudio("soar/numeros/200e.mp3");
-                Thread.sleep(400);
-                
-                if((digito3 == 0) || (digito2 == 1)){ //é multiplo de dez ou entre 11 e 19                    
-                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
+                Thread.sleep(500);
                     
-                }else{ //é entre 220 e 299
-                    if(digito3 == 0){//é multiplo de dez
-                        this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
-                            
-                    }else{
-                        this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
-                        Thread.sleep(350);
-                            
-                        this.rodaAudio("soar/palavras/e.mp3");
-                            
-                        this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
-                    }
-                }
+                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
             }
         }else if(digito1 == 0 ){
             if(digito2 == 0 ){ //se for menos menos de dez
                 this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
-            }else if (digito2 == 1){ // é de 10 a 19
-                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
-            }else if (digito3 == 0 ){ // é multiplo de 10
-                this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
             }else{
-                this.rodaAudio("soar/numeros/" + sdigito2 + "0.mp3");
-                Thread.sleep(300);
-                            
-                this.rodaAudio("soar/palavras/e.mp3");
-                            
-                this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
+                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
             }
         }       
     }
