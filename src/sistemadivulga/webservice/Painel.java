@@ -729,32 +729,34 @@ public class Painel implements server {
                 if(digito3 == 0){ //É cem
                     this.rodaAudio("soar/numeros/100.mp3");
                 }else{
+                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
+                }
+            }else{ // é entre 110 e 199
+                if(digito2 <= 40){
+                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
+                }else{
                     this.rodaAudio("soar/numeros/100e.mp3");
                     Thread.sleep(500);
                     
-                    this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
+                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
                 }
-            }else{ // é entre 110 e 199
-                this.rodaAudio("soar/numeros/100e.mp3");
-                Thread.sleep(500);
-                    
-                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
             }
         }else if(digito1 == 2){
             if(digito2 == 0){ //se for menos de 210
                 if(digito3 == 0){ //É duzentos
                     this.rodaAudio("soar/numeros/200.mp3");
                 }else{ // É menos de 210 e mais de 200
+                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
+                }
+            }else{ // é entre 210 e 299
+                if(digito2 <= 40){
+                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
+                }else{
                     this.rodaAudio("soar/numeros/200e.mp3");
                     Thread.sleep(500);
                     
-                    this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
+                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
                 }
-            }else{ // é entre 210 e 299
-                this.rodaAudio("soar/numeros/200e.mp3");
-                Thread.sleep(500);
-                    
-                this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
             }
         }else if(digito1 == 0 ){
             if(digito2 == 0 ){ //se for menos menos de dez
