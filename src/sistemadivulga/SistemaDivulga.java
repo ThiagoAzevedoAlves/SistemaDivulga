@@ -22,7 +22,7 @@ public class SistemaDivulga {
      */
     public static void main(String args[]) {
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
+        executor.execute(new Runnable(){
             public void run() {
                 Painel p = new Painel();
                 Endpoint.publish("http://0.0.0.0:9876/webservice", p);

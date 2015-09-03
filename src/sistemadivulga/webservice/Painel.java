@@ -5,18 +5,13 @@
  */
 package sistemadivulga.webservice;
 
-import com.thehowtotutorial.splashscreen.JSplash;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
+
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.SplashScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -33,7 +28,6 @@ import javax.print.SimpleDoc;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import javazoom.jl.decoder.JavaLayerException;
 import sistemadivulga.SistemaDivulga;
 import sistemadivulga.database.Database;
 import sistemadivulga.frames.Tela;
@@ -72,16 +66,7 @@ public class Painel implements server {
         this.CarregaDados();          
     }
     
-    static void renderSplashFrame(Graphics2D g, int frame) {
-        final String[] comps = {"Carregando Arquivos de Áudio", "Carregando Vídeos", "Carregando Noticias da Internet", "Inicializando Web Service"};
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(120,140,200,40);
-        g.setPaintMode();
-        g.setColor(Color.BLACK);
-        g.drawString(comps[(frame/5)%4]+"...", 120, 150);
-    }
-    
-    public void CarregaDados(){
+    public void CarregaDados(){ //se tiver algum dado salvo no DB com a data atual, ele carrega os dados, senão ele inicia a contagem com os valores padão.
         if(d.getId() > 0){
             this.cert_a = d.getCertAtual();
             this.cert_pref_a = d.getPrefAtual();
@@ -111,7 +96,7 @@ public class Painel implements server {
         histsen = new ArrayList();
     }
     
-    public void TimerCertidao() {
+    public void TimerCertidao(){ //Aciona a Tela de Chamada de Certidao
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(cert_a));
@@ -127,7 +112,7 @@ public class Painel implements server {
         timer.start();
     }
     
-    public void TimerCertidaoGuiche(int guiche) {
+    public void TimerCertidaoGuiche(int guiche) { //Aciona a Tela de Chamada de Certidao por Guiche
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(cert_a));
@@ -145,7 +130,7 @@ public class Painel implements server {
         timer.start();
     }
         
-    public void TimerPreferencial() {
+    public void TimerPreferencial() { //Aciona a Tela de Chamada de Certidao Preferencial
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(cert_pref_a));
@@ -161,7 +146,7 @@ public class Painel implements server {
         timer.start();
     }
     
-    public void TimerPreferencialGuiche(int guiche) {
+    public void TimerPreferencialGuiche(int guiche) {//Aciona a Tela de Chamada de Certidao Preferencial por Guiche
         tempo = 0;
         c.setVisible(true);
         c.jLguiche.setText("GUICHÊ "+ guiche);
@@ -179,7 +164,7 @@ public class Painel implements server {
         timer.start();
     }
         
-    public void TimerRegistros(){
+    public void TimerRegistros(){ //Aciona a Tela de Chamada de Registros
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(reg_a));
@@ -195,7 +180,7 @@ public class Painel implements server {
         timer.start();
     }
     
-    public void TimerRegistrosGuiche(int guiche){
+    public void TimerRegistrosGuiche(int guiche){ //Aciona a Tela de Chamada de Registros por Guiche
         tempo = 0;
         c.setVisible(true);
         c.JlSenha.setText(Integer.toString(reg_a));
@@ -213,7 +198,7 @@ public class Painel implements server {
         timer.start();
     }
     
-    public ActionListener Certidoes = (ActionEvent evt) -> {
+    public ActionListener Certidoes = (ActionEvent evt) -> { //Listener que ativa e desativa a tela de Chamada
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 if (tempo==0){
@@ -227,7 +212,7 @@ public class Painel implements server {
         });
     };
     
-    public ActionListener Preferencial = (ActionEvent evt) -> {
+    public ActionListener Preferencial = (ActionEvent evt) -> { //Listener que ativa e desativa a tela de Chamada
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 if (tempo==0){
@@ -241,7 +226,7 @@ public class Painel implements server {
         });
     };
     
-    public ActionListener Registros = (ActionEvent evt) -> {
+    public ActionListener Registros = (ActionEvent evt) -> { //Listener que ativa e desativa a tela de Chamada
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 if (tempo==0){
@@ -256,7 +241,7 @@ public class Painel implements server {
     };
     
     @Override
-    public void ImprimeRegistros() {
+    public void ImprimeRegistros() { //Imprime o Ticket de Atendimento para Registros
         this.detectaImpressoras("Generic / Text Only");
         this.centraliza();
         this.imprime("CARTORIO MEZZARI\n");
@@ -267,11 +252,11 @@ public class Painel implements server {
         this.acionarGuilhotina();
         reg++;
         d.addReg(d.getId(), reg);
-//        d.geraAtendimento(2);
+//        d.geraAtendimento(2); //Gera horario de atendimento no DB
     }
 
     @Override
-    public void ImprimePreferencial() {
+    public void ImprimePreferencial() { //Imprime o Ticket de Atendimento para Certidoes Preferencial
         this.detectaImpressoras("Generic / Text Only");
         this.centraliza();
         this.imprime("CARTORIO MEZZARI\n");
@@ -282,11 +267,11 @@ public class Painel implements server {
         this.acionarGuilhotina();
         cert_pref++;
         d.addPref(d.getId(), cert_pref);
-//        d.geraAtendimento(0);
+//        d.geraAtendimento(0); //Gera horario de atendimento no DB
     }
 
     @Override
-    public void ImprimeCertidoes() {
+    public void ImprimeCertidoes() { //Imprime o Ticket de Atendimento para Certidoes
         this.detectaImpressoras("Generic / Text Only");
         this.centraliza();
         this.imprime("CARTORIO MEZZARI\n");
@@ -297,7 +282,7 @@ public class Painel implements server {
         this.acionarGuilhotina();
         cert++;
         d.addCert(d.getId(), cert);
-//        d.geraAtendimento(1);
+//        d.geraAtendimento(1); //Gera horario de atendimento no DB
     }
     
     @Override
@@ -671,99 +656,73 @@ public class Painel implements server {
      * @param tipo 0 if preferencial; 1 if certidão; 2 if registros. 
      */
     public void ContaSenha(int tipo) throws InterruptedException {
+        
+        //inicializa as variaveis --------------//
         String senha = null;
         int digito1, digito2, digito3;
         digito1 = tipo;
         digito2 = 0;
         digito3 = 0;
+        //-----------------------------------//
         
+        //Roda o Sinal de Alerta -------------//
+        this.rodaAudio("dong.mp3");
+        //------------------------------------//
+        
+        //Um segundo após o apito Avisa se é Certidao, Registros ou Preferencial//
+        Thread.sleep(1000);
         if (tipo==1){ //se for certidao
             senha = String.valueOf(cert_a); //converte a senha para string
-            this.rodaAudio("dong.mp3");
-            Thread.sleep(500);
             this.rodaAudio("soar/palavras/certidoes.mp3");
-            Thread.sleep(1000);
-            
-            this.rodaAudio("soar/palavras/senha.mp3");
-            Thread.sleep(500);
-        }else if (tipo == 2){
+        }else if (tipo == 2){ //se for registros
             senha = String.valueOf(reg_a); //converte a senha para string
-            this.rodaAudio("dong.mp3");
-            Thread.sleep(500);
             this.rodaAudio("soar/palavras/registros.mp3");
-            Thread.sleep(1000);
-            
-            this.rodaAudio("soar/palavras/senha.mp3");
-            Thread.sleep(500);
-        }else if (tipo == 0){
+        }else if (tipo == 0){ //se for preferencial
             senha = String.valueOf(cert_pref_a); //converte a senha para string
-            this.rodaAudio("dong.mp3");
-            Thread.sleep(500);
             this.rodaAudio("soar/palavras/preferencial.mp3");
-            Thread.sleep(1000);
-            
-            this.rodaAudio("soar/palavras/senha.mp3");
-            Thread.sleep(500);
-        }
+        }        
+        //----------------------------------------------------------------------//
         
-        if (senha.length() < 3){
-            if (senha.length() < 2){
-                digito2  = 0;
+        //Monta os Inteiros responsaveis pelo tratamento da Senha ------------------------------------------------------//
+        if(senha.length() < 3){ //se a senha tiver menos de 3 digitos
+            if (senha.length() < 2){ //caso tenha apenas 1 digito
+                digito2  = 0; 
                 digito3 = Integer.valueOf(senha);
-            }else{
-                digito2 = Integer.valueOf(senha.substring(0,1));
-                digito3 = Integer.valueOf(senha.substring(1,2));
+                //exemplo(digito3 = 1) = 01
+            }else{ //senao tem 2 digitos
+                digito2 = Integer.valueOf(senha.substring(0,1)); //o digito2 recebe o primeiro digito da senha
+                digito3 = Integer.valueOf(senha.substring(1,2)); //o digito3 recebe o ultimo digito da senha
+                //exemplo(digito2 = 1)(digito3 = 1) = 11
             }
-        }else{
+        }else{ //senao tem 3 digitos
+            //digito1 = Integer.valueOf(senha.substring(0,1)); //nao é necessário por causa da inicialização (digito1 = tipo)
             digito2 = Integer.valueOf(senha.substring(1,2));
             digito3 = Integer.valueOf(senha.substring(2,3));
         }
+        //-------------------------------------------------------------------------------------------------------------//
         
+        //converte os valores da senha para String ---/
         String sdigito1 = String.valueOf(digito1);
         String sdigito2 = String.valueOf(digito2);
         String sdigito3 = String.valueOf(digito3);
         String sdigito2_3 = sdigito2.concat(sdigito3);
+        //--------------------------------------------/
         
-        if(digito1 == 1){ //se a senha começar em 100
-            if(digito2 == 0){ //se for menos de 110
-                if(digito3 == 0){ //É cem
-                    this.rodaAudio("soar/numeros/100.mp3");
-                }else{
-                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
-                }
-            }else{ // é entre 110 e 199
-                if(digito2 <= 40){
-                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
-                }else{
-                    this.rodaAudio("soar/numeros/100e.mp3");
-                    Thread.sleep(500);
-                    
-                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
-                }
-            }
-        }else if(digito1 == 2){
-            if(digito2 == 0){ //se for menos de 210
-                if(digito3 == 0){ //É duzentos
-                    this.rodaAudio("soar/numeros/200.mp3");
-                }else{ // É menos de 210 e mais de 200
-                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
-                }
-            }else{ // é entre 210 e 299
-                if(digito2 <= 40){
-                    this.rodaAudio("soar/numeros/" + senha + ".mp3");
-                }else{
-                    this.rodaAudio("soar/numeros/200e.mp3");
-                    Thread.sleep(500);
-                    
-                    this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
-                }
-            }
-        }else if(digito1 == 0 ){
-            if(digito2 == 0 ){ //se for menos menos de dez
+        //Após um segundo Chama a Respectiva Senha ----------------------------------------//
+        Thread.sleep(1000);
+        if(digito1 == 1 || digito1 == 2){ //se a senha começar em 100 ou 200
+            this.rodaAudio("soar/numeros/" + senha + ".mp3");
+        }else if(digito1 == 0 ){ //se for menos de 100
+            if(digito2 == 0 ){ //se tiver 1 digito
                 this.rodaAudio("soar/numeros/" + sdigito3 + ".mp3");
-            }else{
+            }else{ //se tiver 2 digitos
                 this.rodaAudio("soar/numeros/" + sdigito2_3 + ".mp3");
             }
-        }       
+        }
+        //----------------------------------------------------------------------------------//
     }
 }
+
+//CONTAGEM DE THREAD.SLEEP() ANINHADOS = 2
+
+//DIMINUIR PARA 2

@@ -50,6 +50,7 @@ public class Database {
             prepared = conn.prepareStatement("SELECT id FROM diario WHERE data=?");
             prepared.setString(1, date.toString());
             resultSet = prepared.executeQuery();
+            
             int n;
             while(resultSet.next()){
                 n = resultSet.getInt(1);
